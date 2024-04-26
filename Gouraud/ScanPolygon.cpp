@@ -1,8 +1,11 @@
 #define NOMINMAX
 
 #include "ScanPolygon.h"
+#include "Polypartition.h"
+#include "Chronometer.h"
 #include <iostream>
 #include <d3d9.h>
+#include <list>
 
 int W = 640;
 int H = 480;
@@ -95,6 +98,72 @@ GVertex* ScanPolygon::getFrame(GVertex polygon[], size_t polygonLength, GVertex*
 	return frame;
 }
 
+void ScanPolygon::gouraudShading(GVertex p[3], char* pixels, int pLength)
+{
+	DWORD* row = (DWORD*)pixels;
+	GVertex* frame = new GVertex[4];
+	frame = getFrame(p, pLength, frame);
+
+	float y1 = frame[0].y;
+	float y2 = y1;
+	float x1 = frame[0].x;
+	float x2 = x1;
+	for (int i = 1; i < 4; i++) {
+		if (frame[i].y != y1) {
+			y2 = frame[i].y;
+			break;
+		}
+	}
+	for (int i = 1; i < 4; i++) {
+		if (frame[i].x != x1) {
+			x2 = frame[i].x;
+			break;
+		}
+	}
+	float t = y1;
+	y1 = std::min(y1, y2);
+	y2 = std::max(t, y2);
+	t = x1;
+	x1 = std::min(x1, x2);
+	x2 = std::max(t, x2);
+
+
+	int iy1 = (int)std::round(y1);
+	int iy2 = (int)std::round(y2);
+	int ix1 = (int)std::round(x1);
+	int ix2 = (int)std::round(x2);
+	for (int y = iy1; y <= iy2; y++) {
+		for (int x = ix1; x <= ix2; x++) {
+			GVertex gv = { (float)x, (float)y };
+			if (pnpoly(p, pLength, gv) && y >= 0 && y < H && x >= 0 && x < W) {
+
+				// TODO triangles decompositions
+
+				// Gouraud on each triangle
+				// https://codeplea.com/triangular-interpolation
+				float wv0 = (p[1].y - p[2].y) * (x - p[2].x) + (p[2].x - p[1].x) * (y - p[2].y);
+				wv0 /= (p[1].y - p[2].y) * (p[0].x - p[2].x) + (p[2].x - p[1].x) * (p[0].y - p[2].y);
+
+				float wv1 = (p[2].y - p[0].y) * (x - p[2].x) + (p[0].x - p[2].x) * (y - p[2].y);
+				wv1 /= (p[1].y - p[2].y) * (p[0].x - p[2].x) + (p[2].x - p[1].x) * (p[0].y - p[2].y);
+
+				float wv2 = 1 - wv0 - wv1;
+
+				float r = p[0].c.r * wv0 + p[1].c.r * wv1 + p[2].c.r * wv2;
+				float g = p[0].c.g * wv0 + p[1].c.g * wv1 + p[2].c.b * wv2;
+				float b = p[0].c.b * wv0 + p[1].c.b * wv1 + p[2].c.b * wv2;
+
+				unsigned char ucr = (unsigned char)r;
+				unsigned char ucg = (unsigned char)g;
+				unsigned char ucb = (unsigned char)b;
+
+				*(row + (W * y + x)) = D3DCOLOR_XRGB(ucr, ucg, ucb);
+			}
+		}
+	}
+	delete[] frame;
+}
+
 void ScanPolygon::trace(char* pixels, GVertex p[], size_t pLength, Color c)
 {
 	DWORD* row = (DWORD*)pixels;
@@ -144,65 +213,34 @@ void ScanPolygon::trace(char* pixels, GVertex p[], size_t pLength, Color c)
 
 void ScanPolygon::traceGouraud(char* pixels, GVertex p[], size_t pLength)
 {
-	DWORD* row = (DWORD*)pixels;
-	GVertex* frame = new GVertex[4];
-	frame = getFrame(p, pLength, frame);
+	// triangles decomposition
+	GVertex q[3];
+	if (pLength > 3) {
+		TPPLPartition pp;
+		std::list<TPPLPoly> onePoly;
+		std::list<TPPLPoly> triangles;
+		onePoly.clear();
 
-	float y1 = frame[0].y;
-	float y2 = y1;
-	float x1 = frame[0].x;
-	float x2 = x1;
-	for (int i = 1; i < 4; i++) {
-		if (frame[i].y != y1) {
-			y2 = frame[i].y;
-			break;
+		TPPLPoly poly;
+		poly.Init(pLength);
+		poly.SetHole(false);
+		for (int i = 0; i < pLength; i++) {
+			poly[i].x = p[i].x;
+			poly[i].y = p[i].y;
 		}
-	}
-	for (int i = 1; i < 4; i++) {
-		if (frame[i].x != x1) {
-			x2 = frame[i].x;
-			break;
-		}
-	}
-	float t = y1;
-	y1 = std::min(y1, y2);
-	y2 = std::max(t, y2);
-	t = x1;
-	x1 = std::min(x1, x2);
-	x2 = std::max(t, x2);
-
-
-	int iy1 = (int)std::round(y1);
-	int iy2 = (int)std::round(y2);
-	int ix1 = (int)std::round(x1);
-	int ix2 = (int)std::round(x2);
-	for (int y = iy1; y <= iy2; y++) {
-		for (int x = ix1; x <= ix2; x++) {
-			GVertex gv = { (float)x, (float)y };
-			if (pnpoly(p, pLength, gv) && y >= 0 && y < H && x >= 0 && x < W) {
-
-				// https://codeplea.com/triangular-interpolation
-				float wv0 = (p[1].y - p[2].y) * (x - p[2].x) + (p[2].x - p[1].x) * (y - p[2].y);
-				wv0 /= (p[1].y - p[2].y) * (p[0].x - p[2].x) + (p[2].x - p[1].x) * (p[0].y - p[2].y);
-
-				float wv1 = (p[2].y - p[0].y) * (x - p[2].x) + (p[0].x - p[2].x) * (y - p[2].y);
-				wv1 /= (p[1].y - p[2].y) * (p[0].x - p[2].x) + (p[2].x - p[1].x) * (p[0].y - p[2].y);
-
-				float wv2 = 1 - wv0 - wv1;
-
-				float r = p[0].c.r * wv0 + p[1].c.r * wv1 + p[2].c.r * wv2;
-				float g= p[0].c.g * wv0 + p[1].c.g * wv1 + p[2].c.b * wv2;
-				float b = p[0].c.b * wv0 + p[1].c.b * wv1 + p[2].c.b * wv2;
-
-				unsigned char ucr =  (unsigned char)r;
-				unsigned char ucg = (unsigned char)g;
-				unsigned char ucb = (unsigned char)b;
-
-				*(row + (W * y + x)) = D3DCOLOR_XRGB(ucr, ucg, ucb);
+		onePoly.push_back(poly);
+		pp.Triangulate_EC(&onePoly, &triangles);
+		for (auto iter = triangles.begin(); iter != triangles.end(); iter++) {
+			std::string gnp =  "gnp:" + std::to_string(iter->GetNumPoints());
+			Chronometer::write(gnp);
+			for (int i = 0; i < iter->GetNumPoints(); i++) {
+				std::string gnp = "pt:" + std::to_string(iter->GetPoint(i).x) + "," + std::to_string(iter->GetPoint(i).y);
+				Chronometer::write(gnp);
 			}
 		}
 	}
-
-
-	delete[] frame;
+	else {
+		// and gouraud on each
+		gouraudShading(p, pixels, 3);
+	}
 }

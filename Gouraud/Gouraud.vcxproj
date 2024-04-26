@@ -132,6 +132,7 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Chronometer.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
+    <ClCompile Include="Polypartition.cpp" />
     <ClCompile Include="RMatrix.cpp" />
     <ClCompile Include="RVector.cpp" />
     <ClCompile Include="ScanPolygon.cpp" />
@@ -139,6 +140,7 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="Chronometer.h" />
+    <ClInclude Include="Polypartition.h" />
     <ClInclude Include="RMatrix.h" />
     <ClInclude Include="RVector.h" />
     <ClInclude Include="ScanPolygon.h" />

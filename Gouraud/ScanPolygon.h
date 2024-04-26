@@ -30,8 +30,8 @@ private:
 	static bool pnpoly(GVertex p[], size_t pLength, GVertex& t);
     static Edge* returnEdges(GVertex vertices[], size_t verticesLength, Edge edges[]);
 	static Edge findEdge(int x, int y, Edge edges[], size_t edgesLength);
-
 	static GVertex* getFrame(GVertex polygon[], size_t polygonLength, GVertex* square);
+	static void gouraudShading(GVertex p[3], char* pixels, int pLength);
 public:
 	static void trace(char *pixels, GVertex p[], size_t pLength, Color c);
 	static void traceGouraud(char* pixels, GVertex p[], size_t pLength);
