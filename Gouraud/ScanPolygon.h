@@ -1,4 +1,9 @@
 #pragma once
+#include<cmath>
+
+#define M_PI 3.14159265358979323846
+#define TO_DEGREE(x)((x * (180.0/3.141592653589793238463)))
+#define TO_DEGREE_INT(x)((int) std::round(x * (180.0/3.141592653589793238463)))
 
 typedef struct _color {
 	unsigned char r;
@@ -24,6 +29,15 @@ typedef struct _edge {
 	GNormal n1, n2;
 } Edge;
 
+//int verticesSorter(void* ctxvar, const void* _a, const void* _b) {
+//	GVertex a = *(GVertex*)_a;
+//	GVertex b = *(GVertex*)_b;
+//	GVertex c = *(GVertex*)ctxvar;
+//	double a1 = (TO_DEGREE_INT(std::atan2(a.x - c.x, a.y - c.y)) + 360) % 360;
+//	double a2 = (TO_DEGREE_INT(std::atan2(b.x - c.x, b.y - c.y)) + 360) % 360;
+//	return (int)(a1 - a2);
+//}
+
 class ScanPolygon
 {
 private:
@@ -32,6 +46,10 @@ private:
 	static Edge findEdge(int x, int y, Edge edges[], size_t edgesLength);
 	static GVertex* getFrame(GVertex polygon[], size_t polygonLength, GVertex* square);
 	static void gouraudShading(GVertex p[3], char* pixels, int pLength);
+	static GVertex findCentroid(GVertex p[], size_t pLength);
+	static int verticesSorter(void* ctxvar, const void* _a, const void* _b);
+	static void sortVertices(GVertex p[], size_t pLength);
+
 public:
 	static void trace(char *pixels, GVertex p[], size_t pLength, Color c);
 	static void traceGouraud(char* pixels, GVertex p[], size_t pLength);

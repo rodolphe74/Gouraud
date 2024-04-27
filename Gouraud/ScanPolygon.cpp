@@ -5,7 +5,7 @@
 #include "Chronometer.h"
 #include <iostream>
 #include <d3d9.h>
-#include <list>
+#include <algorithm>
 
 int W = 640;
 int H = 480;
@@ -164,6 +164,41 @@ void ScanPolygon::gouraudShading(GVertex p[3], char* pixels, int pLength)
 	delete[] frame;
 }
 
+GVertex ScanPolygon::findCentroid(GVertex p[], size_t pLength)
+{
+	float x = 0;
+	float y = 0;
+	for (int i = 0; i < pLength; i++) {
+		x += p[i].x;
+		y += p[i].y;
+	}
+	GVertex center = { 0, 0 };
+	center.x = x / pLength;
+	center.y = y / pLength;
+	return center;
+}
+
+int ScanPolygon::verticesSorter(void* ctxvar, const void* _a, const void* _b)
+{
+	GVertex a = *(GVertex*)_a;
+	GVertex b = *(GVertex*)_b;
+	GVertex c = *(GVertex*)ctxvar;
+	double a1 = (TO_DEGREE_INT(std::atan2(a.x - c.x, a.y - c.y)) + 360) % 360;
+	double a2 = (TO_DEGREE_INT(std::atan2(b.x - c.x, b.y - c.y)) + 360) % 360;
+	return (int)(a1 - a2);
+
+}
+
+void ScanPolygon::sortVertices(GVertex p[], size_t pLength)
+{
+	GVertex center = findCentroid(p, pLength);
+	qsort_s(p, pLength, sizeof(GVertex), verticesSorter, &center);
+
+	int a = 0;
+
+}
+
+
 void ScanPolygon::trace(char* pixels, GVertex p[], size_t pLength, Color c)
 {
 	DWORD* row = (DWORD*)pixels;
@@ -213,31 +248,42 @@ void ScanPolygon::trace(char* pixels, GVertex p[], size_t pLength, Color c)
 
 void ScanPolygon::traceGouraud(char* pixels, GVertex p[], size_t pLength)
 {
+	Color c = {255, 255, 0};
+	trace(pixels, p, pLength, c);
+
 	// triangles decomposition
 	GVertex q[3];
 	if (pLength > 3) {
-		TPPLPartition pp;
-		std::list<TPPLPoly> onePoly;
-		std::list<TPPLPoly> triangles;
-		onePoly.clear();
 
-		TPPLPoly poly;
-		poly.Init(pLength);
-		poly.SetHole(false);
-		for (int i = 0; i < pLength; i++) {
-			poly[i].x = p[i].x;
-			poly[i].y = p[i].y;
-		}
-		onePoly.push_back(poly);
-		pp.Triangulate_EC(&onePoly, &triangles);
-		for (auto iter = triangles.begin(); iter != triangles.end(); iter++) {
-			std::string gnp =  "gnp:" + std::to_string(iter->GetNumPoints());
-			Chronometer::write(gnp);
-			for (int i = 0; i < iter->GetNumPoints(); i++) {
-				std::string gnp = "pt:" + std::to_string(iter->GetPoint(i).x) + "," + std::to_string(iter->GetPoint(i).y);
-				Chronometer::write(gnp);
-			}
-		}
+		sortVertices(p, pLength);
+
+
+		//TPPLPartition pp;
+		//std::list<TPPLPoly> onePoly;
+		//std::list<TPPLPoly> triangles;
+		//onePoly.clear();
+
+		//TPPLPoly poly;
+		//poly.Init((long)pLength);
+		//poly.SetHole(false);
+		//for (int i = 0; i < pLength; i++) {
+		//	poly[i].x = p[i].x;
+		//	poly[i].y = p[i].y;
+		//}
+		//onePoly.push_back(poly);
+		//// pp.Triangulate_EC(&onePoly, &triangles);
+		//pp.Triangulate_OPT(&poly, &triangles);
+		//for (auto iter = triangles.begin(); iter != triangles.end(); iter++) {
+		//	std::string gnp =  "gnp:" + std::to_string(iter->GetNumPoints());
+		//	Chronometer::write(gnp);
+		//	for (int i = 0; i < /*iter->GetNumPoints()*/3; i++) {
+		//		std::string pt = "pt:" + std::to_string(iter->GetPoint(i).x) + "," + std::to_string(iter->GetPoint(i).y);
+		//		Chronometer::write(pt);
+		//		q[i].x = (float)iter->GetPoint(i).x;
+		//		q[i].y = (float)iter->GetPoint(i).y;
+		//	}
+		//	gouraudShading(q, pixels, 3);
+		//}
 	}
 	else {
 		// and gouraud on each

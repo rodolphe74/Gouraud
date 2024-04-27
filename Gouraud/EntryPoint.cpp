@@ -7,7 +7,7 @@
 #include <d3d9.h>
 
 static unsigned int counter;
-static GVertex v[4];
+static GVertex v[3], z[4];
 static GVertex vCenter;
 
 RMatrix rotation(MAT33);
@@ -25,8 +25,20 @@ void init() {
 	v[2].x = 300; v[2].y = 150; v[2].z = 8; v[2].c = { 0, 255, 255 };
 	v[2].n.x = .2f; v[2].n.y = 0.0f; v[2].n.z = 1.0f;
 
-	v[3].x = 100; v[3].y = 120; v[3].z = 8; v[3].c = { 0, 0, 255 };
-	v[3].n.x = .2f; v[3].n.y = 0.0f; v[3].n.z = 1.0f;
+
+
+	z[0].x = 100; z[0].y = 100; z[0].z = 6; z[0].c = { 255, 255, 255 };
+	z[0].n.x = .1f; z[0].n.y = 0.0f; z[0].n.z = 1.0f;
+
+	z[1].x = 300; z[1].y = 300; z[1].z = 4; z[1].c = { 255, 255, 0 };
+	z[1].n.x = -.1f; z[1].n.y = 0.0f; z[1].n.z = 1.0f;
+
+	z[2].x = 500; z[2].y = 400; z[2].z = 8; z[2].c = { 0, 255, 255 };
+	z[2].n.x = .2f; z[2].n.y = 0.0f; z[2].n.z = 1.0f;
+
+	z[3].x = 400; z[3].y = 100; z[3].z = 8; z[3].c = { 0, 0, 255 };
+	z[3].n.x = .2f; z[3].n.y = 0.0f; z[3].n.z = 1.0f;
+
 
 	vCenter.x = (v[0].x + v[1].x + v[2].x) / 3;
 	vCenter.y = (v[0].y + v[1].y + v[2].y) / 3;
@@ -91,7 +103,8 @@ void drawQuad(char* pixels, int w, int h, int pitch, bool tictac)
 	}
 
 	// draw the polygon
-	ScanPolygon::traceGouraud(pixels, v, 4);
+	//ScanPolygon::traceGouraud(pixels, v, 3);
+	ScanPolygon::traceGouraud(pixels, z, 4);
 
 	// next frame transformation
 	//translationToOrigin.translation2(-vCenter.x, -vCenter.y);
