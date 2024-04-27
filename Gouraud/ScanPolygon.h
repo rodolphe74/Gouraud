@@ -29,6 +29,9 @@ typedef struct _edge {
 	GNormal n1, n2;
 } Edge;
 
+typedef GVertex Triangle[3];
+typedef GVertex *TrianglePtr[3];
+
 //int verticesSorter(void* ctxvar, const void* _a, const void* _b) {
 //	GVertex a = *(GVertex*)_a;
 //	GVertex b = *(GVertex*)_b;
@@ -46,12 +49,15 @@ private:
 	static Edge findEdge(int x, int y, Edge edges[], size_t edgesLength);
 	static GVertex* getFrame(GVertex polygon[], size_t polygonLength, GVertex* square);
 	static void gouraudShading(GVertex p[3], char* pixels, int pLength);
-	static GVertex findCentroid(GVertex p[], size_t pLength);
 	static int verticesSorter(void* ctxvar, const void* _a, const void* _b);
-	static void sortVertices(GVertex p[], size_t pLength);
+	static void getTriangle(Triangle t, GVertex &p1, GVertex &p2, GVertex &p3);
+	
 
 public:
+	static GVertex findCentroid(GVertex p[], size_t pLength);
+	static void sortVertices(GVertex p[], size_t pLength);
 	static void trace(char *pixels, GVertex p[], size_t pLength, Color c);
 	static void traceGouraud(char* pixels, GVertex p[], size_t pLength);
+	static void debugPolygon(GVertex p[], size_t pLength);
 };
 
