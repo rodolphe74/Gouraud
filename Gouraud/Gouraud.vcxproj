@@ -132,6 +132,7 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Chronometer.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
+    <ClCompile Include="Globals.h" />
     <ClCompile Include="RMatrix.cpp" />
     <ClCompile Include="RVector.cpp" />
     <ClCompile Include="ScanPolygon.cpp" />

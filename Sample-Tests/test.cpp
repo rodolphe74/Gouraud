@@ -1,3 +1,5 @@
+#include "pch.h"
+
 #include "Globals.h"
 #include "Application.h"
 #include "Chronometer.h"
@@ -62,8 +64,6 @@ void initPolygons() {
 	poly6[0].x = 500; poly6[0].y = 100; poly6[0].z = 8; poly6[0].c = CYAN;
 	poly6[0].n.x = .2f; poly6[0].n.y = 0.0f; poly6[0].n.z = 1.0f;
 
-	
-
 	ScanPolygon::sortVertices(poly6, 6);
 	vCenter = ScanPolygon::findCentroid(poly6, 6);
 
@@ -72,59 +72,21 @@ void initPolygons() {
 }
 
 
-
-void rotateVertex(GVertex &v) {
-	coords.v[0] = v.x;
-	coords.v[1] = v.y;
-	coords.v[2] = 1;
-	coords.vecMulMat(translationToOrigin);
-	coords.vecMulMat(rotation);
-	coords.vecMulMat(translationBack);
-	v.x = coords.v[0];
-	v.y = coords.v[1];
+TEST(TestCaseName, TestName) {
+  EXPECT_EQ(1, 1);
+  EXPECT_TRUE(true);
 }
 
-void drawQuad(char* pixels, int w, int h, int pitch, bool tictac)
-{
-	// clear the frame
-	DWORD* row = (DWORD*)pixels;
-	for (int i = 0; i < w * h; i++) {
-		*(row + i) = 0x00323232;
-	}
-
-	// draw the polygon
-	//ScanPolygon::traceGouraud(pixels, v, 3);
-	//ScanPolygon::traceGouraud(pixels, z, 4);
-	ScanPolygon::traceGouraud(pixels, poly6, 6);
-
-	// next frame transformation
-	translationToOrigin.translation2(-vCenter.x, -vCenter.y);
-	translationBack.translation2(vCenter.x, vCenter.y);
-
-	rotation.rotation2((REAL)TO_RADIAN(1));
-
-	rotateVertex(poly6[0]);
-	rotateVertex(poly6[1]);
-	rotateVertex(poly6[2]);
-	rotateVertex(poly6[3]);
-	rotateVertex(poly6[4]);
-	rotateVertex(poly6[5]);
-
-	counter++;
-	if (counter == INT_MAX) {
-		counter = 0;
-	}
+TEST(HelloTest, BasicAssertions) {
+	// Expect two strings not to be equal.
+	EXPECT_STRNE("hello", "world");
+	// Expect equality.
+	EXPECT_EQ(7 * 6, 42);
 }
 
-
-int WINAPI WinMain(HINSTANCE _In_ hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
-{
-	Chronometer::toFile = 2;
-	initPolygons();
-	Application a;
-	a.waitRR(false);
-	a.createWindow(hInstance, "Minimal DX window", 640, 640);
-	a.messagesLoop(drawQuad);
-	Chronometer::meanLap("Mean");
-	return 0;
+TEST(FlatPoloygons, BasicAssertions) {
+	// Expect two strings not to be equal.
+	EXPECT_STRNE("hello", "world");
+	// Expect equality.
+	EXPECT_EQ(7 * 6, 42);
 }

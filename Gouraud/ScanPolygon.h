@@ -1,15 +1,11 @@
 #pragma once
-#include<cmath>
+#include "Globals.h"
+#include <cmath>
 
 #define M_PI 3.14159265358979323846
 #define TO_DEGREE(x)((x * (180.0/3.141592653589793238463)))
 #define TO_DEGREE_INT(x)((int) std::round(x * (180.0/3.141592653589793238463)))
 
-typedef struct _color {
-	unsigned char r;
-	unsigned char g;
-	unsigned char b;
-} Color;
 
 typedef struct _gnormal {
 	float x, y, z, w;
