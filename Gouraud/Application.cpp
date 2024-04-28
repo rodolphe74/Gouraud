@@ -116,13 +116,18 @@ void Application::waitRR(bool yesOrNo)
 	waitRefresh = yesOrNo;
 }
 
+void Application::stopLoop()
+{
+	endLoop = true;
+}
+
 void Application::messagesLoop(DRAW_CALL_BACK_PTR ptr)
 {
 	this->drawingFuntionPtr = ptr;
 
 	DWORD frameTimer = (DWORD)GetTickCount64();
 	MSG msg;
-	while (TRUE) {
+	while (!endLoop) {
 		DWORD endFrame;
 		while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
 			TranslateMessage(&msg);

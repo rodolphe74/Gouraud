@@ -4,9 +4,11 @@
 //#include "ScanPolygon.h"
 //#include "RMatrix.h"
 //#include "RVector.h"
-#include <windows.h>
-#include <d3d9.h>
 #include "TestFlatPolygon.h"
+#include <d3d9.h>
+#include <thread>
+#include <chrono>
+#include <windows.h>
 
 //
 //static unsigned int counter;
@@ -141,7 +143,17 @@ int WINAPI WinMain(HINSTANCE _In_ hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	Application a;
 	a.waitRR(false);
 	a.createWindow(hInstance, "Minimal DX window", 640, 640);
+
+
+	std::thread t1([&] {
+		std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+		a.stopLoop();
+		});
+
+	
+
 	a.messagesLoop(TestFlatPolygon::drawPolygons);
 	Chronometer::meanLap("Mean");
+	t1.detach();
 	return 0;
 }

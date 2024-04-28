@@ -65,6 +65,7 @@ private:
 public:
 	int createWindow(HINSTANCE hInstance, std::string name, int w, int h);
 	void waitRR(bool yesOrNo);
+	void stopLoop();
 	void messagesLoop(DRAW_CALL_BACK_PTR drawFuncPtr);
 };
 
