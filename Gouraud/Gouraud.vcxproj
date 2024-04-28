@@ -136,6 +136,7 @@
     <ClCompile Include="RMatrix.cpp" />
     <ClCompile Include="RVector.cpp" />
     <ClCompile Include="ScanPolygon.cpp" />
+    <ClCompile Include="Tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -143,6 +144,7 @@
     <ClInclude Include="RMatrix.h" />
     <ClInclude Include="RVector.h" />
     <ClInclude Include="ScanPolygon.h" />
+    <ClInclude Include="Tests.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

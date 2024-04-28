@@ -5,8 +5,6 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Gouraud", "Gouraud\Gouraud.vcxproj", "{20D89430-7D90-4606-A4E6-55CCF5C499BF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sample-Tests", "Sample-Tests\Sample-Tests.vcxproj", "{6BE8AFB3-67E5-4AD7-8D20-B49449B2CB90}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -23,14 +21,6 @@ Global
 		{20D89430-7D90-4606-A4E6-55CCF5C499BF}.Release|x64.Build.0 = Release|x64
 		{20D89430-7D90-4606-A4E6-55CCF5C499BF}.Release|x86.ActiveCfg = Release|Win32
 		{20D89430-7D90-4606-A4E6-55CCF5C499BF}.Release|x86.Build.0 = Release|Win32
-		{6BE8AFB3-67E5-4AD7-8D20-B49449B2CB90}.Debug|x64.ActiveCfg = Debug|x64
-		{6BE8AFB3-67E5-4AD7-8D20-B49449B2CB90}.Debug|x64.Build.0 = Debug|x64
-		{6BE8AFB3-67E5-4AD7-8D20-B49449B2CB90}.Debug|x86.ActiveCfg = Debug|Win32
-		{6BE8AFB3-67E5-4AD7-8D20-B49449B2CB90}.Debug|x86.Build.0 = Debug|Win32
-		{6BE8AFB3-67E5-4AD7-8D20-B49449B2CB90}.Release|x64.ActiveCfg = Release|x64
-		{6BE8AFB3-67E5-4AD7-8D20-B49449B2CB90}.Release|x64.Build.0 = Release|x64
-		{6BE8AFB3-67E5-4AD7-8D20-B49449B2CB90}.Release|x86.ActiveCfg = Release|Win32
-		{6BE8AFB3-67E5-4AD7-8D20-B49449B2CB90}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
