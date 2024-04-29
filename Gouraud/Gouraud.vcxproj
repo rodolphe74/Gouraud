@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="3d.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Chronometer.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
@@ -139,9 +140,11 @@
     <ClCompile Include="ScanPolygon.cpp" />
     <ClCompile Include="TestFlatPolygon.cpp" />
     <ClCompile Include="TestGouraudPolygon.cpp" />
+    <ClCompile Include="TestGouraudRendering.cpp" />
     <ClCompile Include="Tests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="3d.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Chronometer.h" />
     <ClInclude Include="Obj.h" />
@@ -150,6 +153,7 @@
     <ClInclude Include="ScanPolygon.h" />
     <ClInclude Include="TestFlatPolygon.h" />
     <ClInclude Include="TestGouraudPolygon.h" />
+    <ClInclude Include="TestGouraudRendering.h" />
     <ClInclude Include="Tests.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

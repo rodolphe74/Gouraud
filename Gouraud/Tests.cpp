@@ -17,11 +17,15 @@ void Tests::runTests(HINSTANCE hInstance)
 
 		std::thread t1([&] {
 			std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-			(*nextFunction.initFunction)();
+			(*function.closeFunction)();		// close current
+			(*nextFunction.initFunction)();		// init next
 			a.setDrawFunction((*nextFunction.drawFunction));
 			});
+
 		(*function.initFunction)();
 		a.messagesLoop(*function.drawFunction);
 		t1.detach();
 	}
+
+	
 }

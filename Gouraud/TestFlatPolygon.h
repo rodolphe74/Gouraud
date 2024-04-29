@@ -27,4 +27,5 @@ public:
 	static void rotateVertex(GVertex &v);
 	static void initPolygons();
 	static void drawPolygons(char *pixels, int w, int h, int pitch, bool tictac);
+	static void close();
 };

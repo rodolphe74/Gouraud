@@ -3,11 +3,13 @@
 #include <vector>
 
 typedef void (*INIT_FUNC_PTR)();
+typedef void (*CLOSE_FUNC_PTR)();
 
 typedef struct _testFunction
 {
 	INIT_FUNC_PTR initFunction;
 	DRAW_CALL_BACK_PTR drawFunction;
+	CLOSE_FUNC_PTR closeFunction;
 } TestFunction;
 
 class Tests

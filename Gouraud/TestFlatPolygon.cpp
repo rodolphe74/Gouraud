@@ -81,3 +81,7 @@ void TestFlatPolygon::drawPolygons(char *pixels, int w, int h, int pitch, bool t
 	rotateVertex(poly6[5]);
 
 }
+
+void TestFlatPolygon::close()
+{
+}
