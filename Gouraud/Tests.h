@@ -8,11 +8,6 @@ typedef struct _testFunction
 {
 	INIT_FUNC_PTR initFunction;
 	DRAW_CALL_BACK_PTR drawFunction;
-	char *pixels;
-	int w;
-	int h;
-	int pitch;
-	bool tictac;
 } TestFunction;
 
 class Tests
@@ -23,6 +18,6 @@ public:
 	static void addTests(TestFunction testFunction) {
 		functions.push_back(testFunction);
 	}
-	static void runTests();
+	static void runTests(HINSTANCE hInstance);
 };
 

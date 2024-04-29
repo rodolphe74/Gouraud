@@ -67,5 +67,6 @@ public:
 	void waitRR(bool yesOrNo);
 	void stopLoop();
 	void messagesLoop(DRAW_CALL_BACK_PTR drawFuncPtr);
+	void setDrawFunction(DRAW_CALL_BACK_PTR drawFuncPtr);
 };
 

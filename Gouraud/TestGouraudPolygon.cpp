@@ -1,11 +1,11 @@
-#include "TestFlatPolygon.h"
+#include "TestGouraudPolygon.h"
+#include "TestRoot.h"
 
-unsigned int TestFlatPolygon::counter;
-GVertex TestFlatPolygon::poly3[3], TestFlatPolygon::poly6[6];
-GVertex TestFlatPolygon::vCenter;
+unsigned int TestGouraudPolygon::counter;
+GVertex TestGouraudPolygon::poly3[3], TestGouraudPolygon::poly4[4], TestGouraudPolygon::poly6[6];
+GVertex TestGouraudPolygon::vCenter;
 
-
-void TestFlatPolygon::initPolygons()
+void TestGouraudPolygon::initPolygons()
 {
 	poly3[0].x = 50; poly3[0].y = 250; poly3[0].z = 6; poly3[0].c = { WHITE };
 	poly3[0].n.x = .1f; poly3[0].n.y = 0.0f; poly3[0].n.z = 1.0f;
@@ -19,7 +19,6 @@ void TestFlatPolygon::initPolygons()
 
 
 	// each vertice must be followed by the real follower vertex.
-
 	poly6[5].x = 400; poly6[5].y = 000; poly6[5].z = 4; poly6[5].c = CYAN;
 	poly6[5].n.x = -.1f; poly6[5].n.y = 0.0f; poly6[5].n.z = 1.0f;
 
@@ -39,14 +38,13 @@ void TestFlatPolygon::initPolygons()
 	poly6[0].n.x = .2f; poly6[0].n.y = 0.0f; poly6[0].n.z = 1.0f;
 
 
-
 	ScanPolygon::sortVertices(poly6, 6);
 	vCenter = ScanPolygon::findCentroid(poly6, 6);
 
 	ScanPolygon::debugPolygon(poly6, 6);
 }
 
-void TestFlatPolygon::rotateVertex(GVertex &v)
+void TestGouraudPolygon::rotateVertex(GVertex &v)
 {
 	coords.v[0] = v.x;
 	coords.v[1] = v.y;
@@ -58,7 +56,7 @@ void TestFlatPolygon::rotateVertex(GVertex &v)
 	v.y = coords.v[1];
 }
 
-void TestFlatPolygon::drawPolygons(char *pixels, int w, int h, int pitch, bool tictac)
+void TestGouraudPolygon::drawPolygons(char *pixels, int w, int h, int pitch, bool tictac)
 {
 	DWORD *row = (DWORD *)pixels;
 	for (int i = 0; i < w * h; i++) {
@@ -66,8 +64,8 @@ void TestFlatPolygon::drawPolygons(char *pixels, int w, int h, int pitch, bool t
 	}
 
 	// draw the polygon
-	ScanPolygon::trace(pixels, poly3, 3, BLUE);
-	ScanPolygon::trace(pixels, poly6, 6, GREEN);
+	ScanPolygon::traceGouraud(pixels, poly3, 3);
+	ScanPolygon::traceGouraud(pixels, poly6, 6);
 
 	// next frame transformation
 	translationToOrigin.translation2(-vCenter.x, -vCenter.y);

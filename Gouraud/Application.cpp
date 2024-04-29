@@ -154,3 +154,8 @@ void Application::messagesLoop(DRAW_CALL_BACK_PTR ptr)
 	endLoop = true;
 }
 
+void Application::setDrawFunction(DRAW_CALL_BACK_PTR drawFuncPtr)
+{
+	this->drawingFuntionPtr = drawFuncPtr;
+}
+

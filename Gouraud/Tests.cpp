@@ -1,12 +1,27 @@
 #include "Tests.h"
+#include "Application.h"
+#include "thread"
+#include <Windows.h>
 
 std::vector<TestFunction> Tests::functions;
 
-void Tests::runTests()
+void Tests::runTests(HINSTANCE hInstance)
 {
-	for (std::vector<TestFunction>::iterator f = functions.begin(); f != functions.end(); f++) {
+	for (std::vector<TestFunction>::iterator f = functions.begin(); f != functions.end() - 1; f++) {
 		TestFunction function = *f;
+		TestFunction nextFunction = *(std::next(f));
+
+		Application a;
+		a.waitRR(false);
+		a.createWindow(hInstance, "Minimal DX window", 640, 640);
+
+		std::thread t1([&] {
+			std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+			(*nextFunction.initFunction)();
+			a.setDrawFunction((*nextFunction.drawFunction));
+			});
 		(*function.initFunction)();
-		(*function.drawFunction)(function.pixels, function.w, function.h, function.pitch, function.tictac);
+		a.messagesLoop(*function.drawFunction);
+		t1.detach();
 	}
 }
