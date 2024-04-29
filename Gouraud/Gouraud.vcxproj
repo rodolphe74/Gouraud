@@ -102,7 +102,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -117,7 +117,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -133,6 +133,7 @@
     <ClCompile Include="Chronometer.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
     <ClCompile Include="Globals.h" />
+    <ClCompile Include="Obj.cpp" />
     <ClCompile Include="RMatrix.cpp" />
     <ClCompile Include="RVector.cpp" />
     <ClCompile Include="ScanPolygon.cpp" />
@@ -143,6 +144,7 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="Chronometer.h" />
+    <ClInclude Include="Obj.h" />
     <ClInclude Include="RMatrix.h" />
     <ClInclude Include="RVector.h" />
     <ClInclude Include="ScanPolygon.h" />
