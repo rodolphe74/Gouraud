@@ -1,4 +1,5 @@
 #include "TestGouraudRendering.h"
+#include "TestRoot.h"
 
 Obj *TestGouraudRendering::o;
 Light *TestGouraudRendering::lg;
@@ -40,7 +41,10 @@ void TestGouraudRendering::initObject()
 
 void TestGouraudRendering::renderObject(char *pixels, int w, int h, int pitch, bool tictac)
 {
-	
+	int32_t *row = (int32_t *)pixels;
+	for (int i = 0; i < w * h; i++) {
+		*(row + i) = 0x00326432;
+	}
 
 }
 

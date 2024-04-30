@@ -16,9 +16,11 @@ int WINAPI WinMain(HINSTANCE _In_ hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	TestFunction t3 = { TestGouraudRendering::initObject, TestGouraudRendering::renderObject, TestGouraudRendering::close };
 
 	Tests t;
-	//t.addTests(t3);
+	
 	t.addTests(t1);
 	t.addTests(t2);
+	t.addTests(t3);
+
 	t.runTests(hInstance);
 
 	return 0;

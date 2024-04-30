@@ -7,25 +7,32 @@ std::vector<TestFunction> Tests::functions;
 
 void Tests::runTests(HINSTANCE hInstance)
 {
-	for (std::vector<TestFunction>::iterator f = functions.begin(); f != functions.end() - 1; f++) {
-		TestFunction function = *f;
-		TestFunction nextFunction = *(std::next(f));
+	std::vector<TestFunction>::iterator f = functions.begin();
+	TestFunction function = *f;
 
-		Application a;
-		a.waitRR(false);
-		a.createWindow(hInstance, "Minimal DX window", 640, 640);
+	Application a;
+	a.waitRR(false);
+	a.createWindow(hInstance, "Minimal DX window", 640, 640);
 
-		std::thread t1([&] {
+	(*function.initFunction)();
+
+
+	std::thread t([&] {
+		for (int i = 0; i < functions.size() - 1; i++) {
+
 			std::this_thread::sleep_for(std::chrono::milliseconds(3000));
 			(*function.closeFunction)();		// close current
-			(*nextFunction.initFunction)();		// init next
-			a.setDrawFunction((*nextFunction.drawFunction));
-			});
 
-		(*function.initFunction)();
-		a.messagesLoop(*function.drawFunction);
-		t1.detach();
-	}
+			f++;
+			function = *f;
 
-	
+			(*function.initFunction)();		// init next
+			a.setDrawFunction((*function.drawFunction));
+		}
+		
+		});
+
+	a.messagesLoop(*function.drawFunction);
+	t.detach();
+
 }
