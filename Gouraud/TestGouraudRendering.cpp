@@ -3,7 +3,7 @@
 
 Obj *TestGouraudRendering::o;
 Light *TestGouraudRendering::lg;
-RMatrix *TestGouraudRendering::_fromPosition_;
+RVector *TestGouraudRendering::_fromPosition_;
 RVector *TestGouraudRendering::_toTarget_;
 RVector *TestGouraudRendering::_up_;
 RMatrix *TestGouraudRendering::_view_;
@@ -13,21 +13,16 @@ RMatrix *TestGouraudRendering::_rotationZ_;
 RVector *TestGouraudRendering::_translationY_;
 
 
-namespace Fx {
-	typedef struct {
-		float x, y;
-		float z;
-		float argb;
-	} Vertex;
-}
-
 void TestGouraudRendering::initObject()
 {
 	o = new Obj();
 	o->loadObjects("./obj/icosphere.obj");
-	lg = nullptr;
+	o->applyMaterial(o->objects["Icosphere"], &CYAN_PLASTIC);
 
-	_fromPosition_ = new RMatrix({ 0.0f, 0.0f, 3.0f }, MTYPE::MAT44);
+	Color c = { 255, 255, 255 };
+	lg = createLight(0.0f, 0.0f, 8.0f, c, 255.0f);
+
+	_fromPosition_ = new RVector({ 0.0f, 0.0f, 3.0f }, VTYPE::VEC3);
 	_toTarget_ = new RVector({ 0.0f, 0.0f, 0.0f }, VTYPE::VEC3);
 	_up_ = new RVector({ 0.0f, 1.0f, 0.0f }, VTYPE::VEC3);
 	_view_ = new RMatrix(MTYPE::MAT44);
@@ -35,6 +30,9 @@ void TestGouraudRendering::initObject()
 	_rotationY_ = new RMatrix(MAT44);
 	_rotationZ_ = new RMatrix(MAT44);
 	_translationY_ = new RVector(VEC4);
+
+	lookAt(*_fromPosition_, *_toTarget_, *_up_, *_view_);
+	perspective((float)TO_RADIAN(90.0f), 1.0f, 0.1f, 100.0f, *_perspective_);
 }
 
 
@@ -43,8 +41,13 @@ void TestGouraudRendering::renderObject(char *pixels, int w, int h, int pitch, b
 {
 	int32_t *row = (int32_t *)pixels;
 	for (int i = 0; i < w * h; i++) {
-		*(row + i) = 0x00326432;
+		*(row + i) = 0x00000000;
 	}
+	// z-buffer
+	float *zBuffer = new float[640 * 640];
+	memset(zBuffer, 0, sizeof(float) * 640 * 640);
+	render(pixels, lg, *o, *_view_, *_perspective_, *_fromPosition_, w, h, zBuffer);
+	delete[] zBuffer;
 
 }
 

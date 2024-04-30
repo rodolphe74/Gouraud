@@ -74,6 +74,7 @@ public:
 	void vecSubVec(RVector &w);
 	void vecMulVec(RVector &w);
 	void vecMulMat(RMatrix &w);
+	void vec4MulMat4(RMatrix &w);
 	void vecMulScalar(REAL s);
 	void vec3CrossVec3(RVector &w);
 	void vecNormalize();

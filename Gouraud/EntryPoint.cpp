@@ -1,3 +1,4 @@
+#include "TestGouraudPolygon3.h"
 #include "TestFlatPolygon.h"
 #include "TestGouraudPolygon.h"
 #include "TestGouraudRendering.h"
@@ -11,16 +12,17 @@
 int WINAPI WinMain(HINSTANCE _In_ hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow) {
 	Chronometer::toFile = 2;
 
+	TestFunction t0 = { TestGouraudPolygon3::initPolygons, TestGouraudPolygon3::drawPolygons, TestGouraudPolygon3::close };
 	TestFunction t1 = { TestFlatPolygon::initPolygons, TestFlatPolygon::drawPolygons, TestFlatPolygon::close };
 	TestFunction t2 = { TestGouraudPolygon::initPolygons, TestGouraudPolygon::drawPolygons, TestGouraudPolygon::close };
 	TestFunction t3 = { TestGouraudRendering::initObject, TestGouraudRendering::renderObject, TestGouraudRendering::close };
 
 	Tests t;
 	
-	t.addTests(t1);
-	t.addTests(t2);
+	//t.addTests(t0);
+	//t.addTests(t1);
+	//t.addTests(t2);
 	t.addTests(t3);
-
 	t.runTests(hInstance);
 
 	return 0;

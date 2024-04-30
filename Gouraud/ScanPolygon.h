@@ -44,16 +44,20 @@ private:
     static Edge* returnEdges(GVertex vertices[], size_t verticesLength, Edge edges[]);
 	static Edge findEdge(int x, int y, Edge edges[], size_t edgesLength);
 	static GVertex* getFrame(GVertex polygon[], size_t polygonLength, GVertex* square);
-	static void gouraudShading(GVertex p[3], char* pixels, int pLength);
+	static void gouraudShading(GVertex p[3], char* pixels, int pLength, float *zBuffer = nullptr);
 	static int verticesSorter(void* ctxvar, const void* _a, const void* _b);
+	static int verticesBUSorter(void *ctxvar, const void *_a, const void *_b);
 	static void getTriangle(Triangle t, GVertex &p1, GVertex &p2, GVertex &p3);
 	
 
 public:
 	static GVertex findCentroid(GVertex p[], size_t pLength);
 	static void sortVertices(GVertex p[], size_t pLength);
+	static void sortVerticesUpBottom(GVertex p[], size_t pLength);
 	static void trace(char *pixels, GVertex p[], size_t pLength, Color c);
-	static void traceGouraud(char* pixels, GVertex p[], size_t pLength);
+	static void traceGouraud(char* pixels, GVertex p[], size_t pLength, float *zBuffer = nullptr);
+	static void _traceGouraud(char *pixels, GVertex p[], size_t pLength, float *zBuffer = nullptr);
+	static void drawPolyBilinear(char *pixels, int x1, int y1, int x2, int y2, int x3, int y3, int c1, int c2, int c3);
 	static void debugPolygon(GVertex p[], size_t pLength);
 };
 

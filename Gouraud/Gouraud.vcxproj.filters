@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Fichiers sources\Tests">
+      <UniqueIdentifier>{e0e9a204-bf33-41c9-b78c-ce403fbf5c1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Tests">
+      <UniqueIdentifier>{08adbb0e-e12c-499f-9f53-9ece863dda9f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EntryPoint.cpp">
@@ -39,20 +45,23 @@
     <ClCompile Include="Tests.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="TestFlatPolygon.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="TestGouraudPolygon.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="Obj.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="TestGouraudRendering.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="3d.cpp">
       <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="TestFlatPolygon.cpp">
+      <Filter>Fichiers sources\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="TestGouraudPolygon.cpp">
+      <Filter>Fichiers sources\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="TestGouraudRendering.cpp">
+      <Filter>Fichiers sources\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="TestGouraudPolygon3.cpp">
+      <Filter>Fichiers sources\Tests</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -74,20 +83,23 @@
     <ClInclude Include="Tests.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="TestFlatPolygon.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="TestGouraudPolygon.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="Obj.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="TestGouraudRendering.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="3d.h">
       <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="TestGouraudRendering.h">
+      <Filter>Fichiers d%27en-tête\Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="TestGouraudPolygon.h">
+      <Filter>Fichiers d%27en-tête\Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="TestFlatPolygon.h">
+      <Filter>Fichiers d%27en-tête\Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="TestGouraudPolygon3.h">
+      <Filter>Fichiers d%27en-tête\Tests</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

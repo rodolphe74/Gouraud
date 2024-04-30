@@ -1,4 +1,6 @@
 #include "3d.h"
+#include "ScanPolygon.h"
+#include "Chronometer.h"
 #include <float.h>
 #include <fstream>
 #include <iostream>
@@ -111,7 +113,7 @@ void reflect(RVector &out, RVector &incident, RVector &normal)
 	out.vecNormalize();
 }
 
-void renderObject(Light *lg, Obj &o, RMatrix &view, RMatrix &perspective, RMatrix &from, int w, int h, int onlyVertices)
+void render(char *pixels, Light *lg, Obj &o, RMatrix &view, RMatrix &perspective, RVector &from, int w, int h, float *zBuffer)
 {
 	RVector worldPos(VEC3);
 	RVector worldNorm(VEC3);
@@ -144,10 +146,11 @@ void renderObject(Light *lg, Obj &o, RMatrix &view, RMatrix &perspective, RMatri
 		for (size_t i = 0; i < it->second->faces.size(); i++) {
 			Face *f = it->second->faces[i];
 			int sz = f->vertices.size();
-			Fx::Vertex *vertices = new Fx::Vertex[sz];
+			GVertex *vertices = new GVertex[sz];
 
 			for (int j = 0; j < sz; j++) {
 				Vertex *v = f->vertices[j];
+
 				worldPos.v[0] = v->pos.x;
 				worldPos.v[1] = v->pos.y;
 				worldPos.v[2] = v->pos.z;
@@ -191,39 +194,45 @@ void renderObject(Light *lg, Obj &o, RMatrix &view, RMatrix &perspective, RMatri
 				specular.vecMulScalar(spec * specularStrength);
 				specular.vecMulVec(lightColor);
 
-				//			// Melt lights with object color ///////////
+				// Melt lights with object color ///////////
 				ambientDiffuseSpecular.vecAddVec(specular);
 				ambientDiffuseSpecular.vecMulVec(objectColor);
 				c.v[0] = ambientDiffuseSpecular.v[0];
 				c.v[1] = ambientDiffuseSpecular.v[1];
 				c.v[2] = ambientDiffuseSpecular.v[2];
 
-				//			// Projection /////////
+				// Projection /////////
 				cameraPos.v[0] = worldPos.v[0];
 				cameraPos.v[1] = worldPos.v[1];
 				cameraPos.v[2] = worldPos.v[2];
 				cameraPos.v[3] = 1.0f;
 
-				cameraPos.vecMulMat(view);
-				cameraPos.vecMulMat(perspective);
+				cameraPos.vec4MulMat4(view);
+				cameraPos.vec4MulMat4(perspective);
 				cameraPos.vecMulScalar(1 / cameraPos.v[3]);
 
-				//			// Feed 3DFX polygon /////////
-				//			// 1.333 to compensate 3dfx resolution ratio
+				// Feed polygons /////////
+				// 1.333 to compensate resolution ratio
 				vertices[j].x = (float)MIN(w - 1, (cameraPos.v[0] + 1) * 0.5 * w);
 				vertices[j].y = (float)MIN(h - 1, (cameraPos.v[1] * 1/*.333*/ + 1) * 0.5 * h);
 				vertices[j].z = (float)MIN(65535, (cameraPos.v[2] + 1) * 0.5 * 65536);
 
-				int r = (int)MIN(255, MAX(0, c.v[0]));
-				int g = (int)MIN(255, MAX(1, c.v[1]));
-				int b = (int)MIN(255, MAX(2, c.v[2]));
-				//vertices[j].argb = (FxU32)0 | (FxU32)r << 16 | (FxU32)g << 8 | (FxU32)b;
+				vertices[j].c.r = (int)MIN(255, MAX(0, c.v[0]));
+				vertices[j].c.g = (int)MIN(255, MAX(0, c.v[1]));
+				vertices[j].c.b = (int)MIN(255, MAX(0, c.v[2]));
 
+				std::string log = "[" + std::to_string(i) + "," + std::to_string(j) + "]    " + std::to_string(vertices[j].c.r) + "," + std::to_string(vertices[j].c.g) + "," + std::to_string(vertices[j].c.b);
+				Chronometer::write(log);
+				
 			}
 
 			//		//  drawing here //
+			for (int i = 0; i < sz; i++) {
+				ScanPolygon::traceGouraud(pixels, vertices, 3, zBuffer);
+			}
 
 			delete[] vertices;
 		}
 	}
+	Chronometer::write("----------");
 }

@@ -77,7 +77,6 @@ void TestGouraudPolygon::drawPolygons(char *pixels, int w, int h, int pitch, boo
 	rotateVertex(poly6[3]);
 	rotateVertex(poly6[4]);
 	rotateVertex(poly6[5]);
-
 }
 
 void TestGouraudPolygon::close()

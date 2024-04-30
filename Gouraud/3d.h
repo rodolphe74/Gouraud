@@ -27,5 +27,5 @@ namespace Fx {
 void lookAt(RVector &position, RVector &target, RVector &up, RMatrix &mat);
 void perspective(float fov_y, float aspect, float n, float f, RMatrix &mat);
 Light *createLight(float x, float y, float z, Color c, float i);
-void renderObject(Light *l, Obj &o, RMatrix &view, RMatrix &perspective, RMatrix &from, int w, int h, int onlyVertices);
+void render(char *pixels, Light *l, Obj &o, RMatrix &view, RMatrix &perspective, RVector &from, int w, int h, float *zBuffer);
 

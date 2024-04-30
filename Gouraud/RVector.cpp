@@ -41,6 +41,15 @@ void RVector::vecMulMat(RMatrix &w)
 	}
 }
 
+void RVector::vec4MulMat4(RMatrix &w)
+{
+	retain();
+	*(v) = *(w.v) * *(x)+*(w.v + 4) * *(x + 1) + *(w.v + 8) * *(x + 2) + *(w.v + 12) * *(x + 3);
+	*(v + 1) = *(w.v + 1) * *(x)+*(w.v + 5) * *(x + 1) + *(w.v + 9) * *(x + 2) + *(w.v + 13) * *(x + 3);
+	*(v + 2) = *(w.v + 2) * *(x)+*(w.v + 6) * *(x + 1) + *(w.v + 10) * *(x + 2) + *(w.v + 14) * *(x + 3);
+	*(v + 3) = *(w.v + 3) * *(x)+*(w.v + 7) * *(x + 1) + *(w.v + 11) * *(x + 2) + *(w.v + 15) * *(x + 3);
+}
+
 void RVector::vecMulScalar(REAL s)
 {
 	*(v) *= s;
@@ -63,10 +72,10 @@ void RVector::vecNormalize()
 {
 	float m = std::sqrt(*(v) * *(v)+*(v + 1) * *(v + 1) + *(v + 2) * *(v + 2));
 	*(v) = *(v) / m;
-	if (c >= 3)
-		*(v + 1) = *(v + 1) / m;
+	*(v + 1) = *(v + 1) / m;
+	*(v + 2) = *(v + 2) / m;
 	if (c >= 4)
-		*(v + 2) = *(v + 2) / m;
+		*(v + 3) = *(v + 3) / m;
 }
 
 REAL RVector::vec3DotReal(RVector &w)

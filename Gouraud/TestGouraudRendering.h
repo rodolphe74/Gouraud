@@ -1,5 +1,6 @@
 #pragma once
 
+#include "3d.h"
 #include "Obj.h"
 #include "RMatrix.h"
 #include "RVector.h"
@@ -11,7 +12,7 @@ class TestGouraudRendering
 public:
 	static Obj *o;
 	static Light *lg;
-	static RMatrix *_fromPosition_;
+	static RVector *_fromPosition_;
 	static RVector *_toTarget_;
 	static RVector *_up_;
 	static RMatrix *_view_;
