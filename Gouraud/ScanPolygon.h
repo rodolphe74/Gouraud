@@ -56,7 +56,6 @@ public:
 	static void sortVerticesUpBottom(GVertex p[], size_t pLength);
 	static void trace(char *pixels, GVertex p[], size_t pLength, Color c);
 	static void traceGouraud(char* pixels, GVertex p[], size_t pLength, float *zBuffer = nullptr);
-	static void _traceGouraud(char *pixels, GVertex p[], size_t pLength, float *zBuffer = nullptr);
 	static void drawPolyBilinear(char *pixels, int x1, int y1, int x2, int y2, int x3, int y3, int c1, int c2, int c3);
 	static void debugPolygon(GVertex p[], size_t pLength);
 };

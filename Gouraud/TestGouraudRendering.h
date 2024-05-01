@@ -20,6 +20,7 @@ public:
 	static RMatrix *_rotationY_;
 	static RMatrix *_rotationZ_;
 	static RVector *_translationY_;
+	static float *zBuffer;
 
 
 	TestGouraudRendering()

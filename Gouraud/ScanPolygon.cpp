@@ -268,38 +268,33 @@ void ScanPolygon::gouraudShading(GVertex p[3], char *pixels, int pLength, float 
 			GVertex gv = { (float)x, (float)y };
 			if (pnpoly(p, pLength, gv) && y >= 0 && y < H && x >= 0 && x < W) {
 
-				
+				// Gouraud on each triangle
 
 
+				// Distance
+				// https://codeplea.com/triangular-interpolation
 				float dv1 = std::sqrt((p[0].x - x) * (p[0].x - x) + (p[0].y - y) * (p[0].y - y));
 				float dv2 = std::sqrt((p[1].x - x) * (p[1].x - x) + (p[1].y - y) * (p[1].y - y));
 				float dv3 = std::sqrt((p[2].x - x) * (p[2].x - x) + (p[2].y - y) * (p[2].y - y));
 				float w1 = 1 / dv1;
-				float w2 = 1 / dv2;	// + > W
+				float w2 = 1 / dv2;
 				float w3 = 1 / dv3;
 				float r = (p[0].c.r * w1 + p[1].c.r * w2 + p[2].c.r * w3) / (w1 + w2 + w3);
 				float g = (p[0].c.g * w1 + p[1].c.g * w2 + p[2].c.g * w3) / (w1 + w2 + w3);
 				float b = (p[0].c.b * w1 + p[1].c.b * w2 + p[2].c.b * w3) / (w1 + w2 + w3);
 				float z = (p[0].z * w1 + p[1].z * w2 + p[2].z * w3) / (w1 + w2 + w3);
 
-				//std::string s = std::to_string(x) + ", " + std::to_string(y) + "  =  " + std::to_string(r) + ", " + std::to_string(g) + ", " + std::to_string(b);
-				//Chronometer::write(s);
 
-
-				// Gouraud on each triangle
+				// Barycentre
 				// https://codeplea.com/triangular-interpolation
 				//float wv0 = (p[1].y - p[2].y) * (x - p[2].x) + (p[2].x - p[1].x) * (y - p[2].y);
 				//wv0 /= (p[1].y - p[2].y) * (p[0].x - p[2].x) + (p[2].x - p[1].x) * (p[0].y - p[2].y);
-
 				//float wv1 = (p[2].y - p[0].y) * (x - p[2].x) + (p[0].x - p[2].x) * (y - p[2].y);
 				//wv1 /= (p[1].y - p[2].y) * (p[0].x - p[2].x) + (p[2].x - p[1].x) * (p[0].y - p[2].y);
-
 				//float wv2 = 1 - wv0 - wv1;
-
 				//float r = p[0].c.r * wv0 + p[1].c.r * wv1 + p[2].c.r * wv2;
 				//float g = p[0].c.g * wv0 + p[1].c.g * wv1 + p[2].c.b * wv2;
 				//float b = p[0].c.b * wv0 + p[1].c.b * wv1 + p[2].c.b * wv2;
-
 				//float z = p[0].z * wv0 + p[1].z * wv1 + p[2].z * wv2;
 
 				unsigned char ucr = (unsigned char)r;
@@ -517,14 +512,7 @@ void ScanPolygon::traceGouraud(char* pixels, GVertex p[], size_t pLength, float 
 	}
 }
 
-void ScanPolygon::_traceGouraud(char *pixels, GVertex p[], size_t pLength, float *zBuffer)
-{
-	uint32_t c0, c1, c2;
-	c0 = (uint32_t)0 | (uint32_t)p[0].c.r << 16 | (uint32_t)p[0].c.g << 8 | (uint32_t)p[0].c.b;
-	c1 = (uint32_t)0 | (uint32_t)p[1].c.r << 16 | (uint32_t)p[1].c.g << 8 | (uint32_t)p[1].c.b;
-	c2 = (uint32_t)0 | (uint32_t)p[2].c.r << 16 | (uint32_t)p[2].c.g << 8 | (uint32_t)p[2].c.b;
-	ScanPolygon::drawPolyBilinear(pixels, p[0].x, p[0].y, p[1].x, p[1].y, p[2].x, p[2].y, c0, c1, c2);
-}
+
 
 void ScanPolygon::debugPolygon(GVertex p[], size_t pLength)
 {

@@ -12,6 +12,7 @@
 
 
 #define MILLEVINGTQUATRE 1024
+#define NORMALS_OPPOSITE 1
 #define VEC4MULMAT4 vec4MulMat4Mmx
 
 static std::chrono::steady_clock::time_point beginTime;
@@ -49,9 +50,9 @@ void lookAt(RVector &position, RVector &target, RVector &up, RMatrix &mat)
 	mat.matSetAt(1, 2, up.v[2]);
 	mat.matSetAt(1, 3, -up.vec3DotReal(position));
 
-	mat.matSetAt(2, 0, -forward.v[0]);
-	mat.matSetAt(2, 1, -forward.v[1]);
-	mat.matSetAt(2, 2, -forward.v[2]);
+	mat.matSetAt(2, 0, NORMALS_OPPOSITE ? -forward.v[0] : forward.v[0]);
+	mat.matSetAt(2, 1, NORMALS_OPPOSITE ? -forward.v[1] : forward.v[1]);
+	mat.matSetAt(2, 2, NORMALS_OPPOSITE ? -forward.v[2] : forward.v[2]);
 	mat.matSetAt(2, 3, forward.vec3DotReal(position));
 
 	mat.matSetAt(3, 0, 0.0f);
@@ -154,9 +155,9 @@ void render(char *pixels, Light *lg, Obj &o, RMatrix &view, RMatrix &perspective
 				worldPos.v[0] = v->pos.x;
 				worldPos.v[1] = v->pos.y;
 				worldPos.v[2] = v->pos.z;
-				worldNorm.v[0] = f->normals[j].x;
-				worldNorm.v[1] = f->normals[j].y;
-				worldNorm.v[2] = f->normals[j].z;
+				worldNorm.v[0] = -f->normals[j].x;
+				worldNorm.v[1] = -f->normals[j].y;
+				worldNorm.v[2] = -f->normals[j].z;
 
 				// Gouraud ////////////
 				worldNorm.vecNormalize();
@@ -215,14 +216,31 @@ void render(char *pixels, Light *lg, Obj &o, RMatrix &view, RMatrix &perspective
 				// 1.333 to compensate resolution ratio
 				vertices[j].x = (float)MIN(w - 1, (cameraPos.v[0] + 1) * 0.5 * w);
 				vertices[j].y = (float)MIN(h - 1, (cameraPos.v[1] * 1/*.333*/ + 1) * 0.5 * h);
-				vertices[j].z = (float)MIN(65535, (cameraPos.v[2] + 1) * 0.5 * 65536);
+				vertices[j].z = (float)MIN(16, (cameraPos.v[2] + 1) * 0.5 * 16);
 
 				vertices[j].c.r = (int)MIN(255, MAX(0, c.v[0]));
 				vertices[j].c.g = (int)MIN(255, MAX(0, c.v[1]));
 				vertices[j].c.b = (int)MIN(255, MAX(0, c.v[2]));
 
-				std::string log = "[" + std::to_string(i) + "," + std::to_string(j) + "]    " + std::to_string(vertices[j].c.r) + "," + std::to_string(vertices[j].c.g) + "," + std::to_string(vertices[j].c.b);
+				//std::string log = 
+				//	std::to_string(j) + " " +
+				//	std::to_string(vertices[j].x) + " " +
+				//	std::to_string(vertices[j].y) + " " +
+				//	std::to_string(vertices[j].z) + " " +
+				//	std::to_string(vertices[j].c.r) + " " +
+				//	std::to_string(vertices[j].c.g) + " " + 
+				//	std::to_string(vertices[j].c.b);
+				//Chronometer::write(log);
+
+				//out << "[" << i << "," << j << "]    " << r << "," << g << "," << b << std::endl;
+				std::string log = "[" +
+					std::to_string(i) + "," +
+					std::to_string(j) + "]    " +
+					std::to_string(vertices[j].c.r) + "," +
+					std::to_string(vertices[j].c.g) + "," +
+					std::to_string(vertices[j].c.b);
 				Chronometer::write(log);
+
 				
 			}
 
@@ -235,4 +253,105 @@ void render(char *pixels, Light *lg, Obj &o, RMatrix &view, RMatrix &perspective
 		}
 	}
 	Chronometer::write("----------");
+}
+
+void rotationX(REAL angle, RMatrix &mat)
+{
+	float cs = std::cos(angle);
+	float sn = std::sin(angle);
+	mat.clear();
+	mat.v[0] = 1;
+	mat.v[5] = cs;
+	mat.v[6] = -sn;
+	mat.v[9] = sn;
+	mat.v[10] = cs;
+	mat.v[15] = 1;
+}
+
+void rotationY(REAL angle, RMatrix &mat)
+{
+	float cs = std::cos(angle);
+	float sn = std::sin(angle);
+	mat.clear();
+	mat.v[0] = cs;
+	mat.v[2] = sn;
+	mat.v[5] = 1;
+	mat.v[8] = -sn;
+	mat.v[10] = cs;
+	mat.v[15] = 1;
+}
+
+void rotationZ(REAL angle, RMatrix &mat)
+{
+	float cs = std::cos(angle);
+	float sn = std::sin(angle);
+	mat.clear();
+	mat.v[0] = cs;
+	mat.v[1] = -sn;
+	mat.v[4] = sn;
+	mat.v[5] = cs;
+	mat.v[10] = 1;
+	mat.v[15] = 1;
+}
+
+void translateObject(Obj &o, RMatrix &m)
+{
+	RVector vx(VTYPE::VEC3);
+	for (size_t i = 0; i < o.vertices.size(); i++) {
+		Vertex *vertex = o.vertices[i];
+		vx.v[0] = vertex->pos.x;
+		vx.v[1] = vertex->pos.y;
+		vx.v[2] = vertex->pos.z;
+		vx.vec4MulMat4(m);
+		vertex->pos.x = vx.v[0];
+		vertex->pos.y = vx.v[1];
+		vertex->pos.z = vx.v[2];
+	}
+
+	std::map<std::string, Object *>::iterator it;
+	for (it = o.objects.begin(); it != o.objects.end(); it++) {
+		for (size_t i = 0; i < it->second->faces.size(); i++) {
+			Face *face = it->second->faces[i];
+			for (size_t j = 0; j < face->normals.size(); j++) {
+				vx.v[0] = face->normals[j].x;
+				vx.v[1] = face->normals[j].y;
+				vx.v[2] = face->normals[j].z;
+				vx.vec4MulMat4(m);
+				face->normals[j].x = vx.v[0];
+				face->normals[j].y = vx.v[1];
+				face->normals[j].z = vx.v[2];
+			}
+		}
+	}
+}
+
+void transformObject(Obj &o, RMatrix &m)
+{
+	RVector vx(VEC4);
+	for (size_t i = 0; i < o.vertices.size(); i++) {
+		Vertex *vertex = o.vertices[i];
+		vx.v[0] = vertex->pos.x;
+		vx.v[1] = vertex->pos.y;
+		vx.v[2] = vertex->pos.z;
+		vx.vec4MulMat4(m);
+		vertex->pos.x = vx.v[0];
+		vertex->pos.y = vx.v[1];
+		vertex->pos.z = vx.v[2];
+	}
+
+	std::map<std::string, Object *>::iterator it;
+	for (it = o.objects.begin(); it != o.objects.end(); it++) {
+		for (size_t i = 0; i < it->second->faces.size(); i++) {
+			Face *face = it->second->faces[i];
+			for (size_t j = 0; j < face->normals.size(); j++) {
+				vx.v[0] = face->normals[j].x;
+				vx.v[1] = face->normals[j].y;
+				vx.v[2] = face->normals[j].z;
+				vx.vec4MulMat4(m);
+				face->normals[j].x = vx.v[0];
+				face->normals[j].y = vx.v[1];
+				face->normals[j].z = vx.v[2];
+			}
+		}
+	}
 }

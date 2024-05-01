@@ -10,7 +10,7 @@
 
 
 int WINAPI WinMain(HINSTANCE _In_ hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow) {
-	Chronometer::toFile = 2;
+	Chronometer::toFile = 0;
 
 	TestFunction t0 = { TestGouraudPolygon3::initPolygons, TestGouraudPolygon3::drawPolygons, TestGouraudPolygon3::close };
 	TestFunction t1 = { TestFlatPolygon::initPolygons, TestFlatPolygon::drawPolygons, TestFlatPolygon::close };
