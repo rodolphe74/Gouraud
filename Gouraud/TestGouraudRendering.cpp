@@ -17,8 +17,8 @@ float *TestGouraudRendering::zBuffer;
 void TestGouraudRendering::initObject()
 {
 	o = new Obj();
-	o->loadObjects("./obj/icosphere.obj");
-	o->applyMaterial(o->objects["Icosphere"], &JADE);
+	o->loadObjects("./obj/cube.obj");
+	o->applyMaterial(o->objects["Cube"], &JADE);
 
 	Color c = { 255, 255, 255 };
 	lg = createLight(0.0f, 0.0f, 8.0f, c, 255.0f);
@@ -36,8 +36,8 @@ void TestGouraudRendering::initObject()
 	
 
 	perspective((float)TO_RADIAN(90.0f), 1.0f, 0.1f, 100.0f, *_perspective_);
-	rotationY((float)TO_RADIAN(1.0f), *_rotationY_);
-	rotationZ((float)TO_RADIAN(0.8f), *_rotationZ_);
+	rotationY((float)TO_RADIAN(1.0f/10), *_rotationY_);
+	rotationZ((float)TO_RADIAN(0.5f/10), *_rotationZ_);
 	
 }
 
@@ -56,6 +56,7 @@ void TestGouraudRendering::renderObject(char *pixels, int w, int h, int pitch, b
 
 	// Transformations
 	transformObject(*o, *_rotationY_);
+	transformObject(*o, *_rotationZ_);
 
 	render(pixels, lg, *o, *_view_, *_perspective_, *_fromPosition_, w, h, zBuffer);
 	
