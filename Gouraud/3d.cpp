@@ -141,6 +141,7 @@ void render(char *pixels, Light *lg, Obj &o, RMatrix &view, RMatrix &perspective
 	objectColor.v[2] = o.color.b;
 
 	std::map<std::string, Object *>::iterator it;
+	static int countFace = 0;
 	for (it = o.objects.begin(); it != o.objects.end(); it++) {
 
 		currentMaterial = &it->second->material;
@@ -149,6 +150,8 @@ void render(char *pixels, Light *lg, Obj &o, RMatrix &view, RMatrix &perspective
 			Face *f = it->second->faces[i];
 			int sz = f->vertices.size();
 			GVertex *vertices = new GVertex[sz];
+			
+			countFace++;
 
 			for (int j = 0; j < sz; j++) {
 				Vertex *v = f->vertices[j];
@@ -237,7 +240,7 @@ void render(char *pixels, Light *lg, Obj &o, RMatrix &view, RMatrix &perspective
 				vertices[j].y = (float)MIN(h - 1, (projectionPos.v[1] + 1) * 0.5 * h);
 				//vertices[j].x = (float)MIN(w - 1, (cameraPos.v[0] + 1) * 0.5 * w);
 				//vertices[j].y = (float)MIN(h - 1, (cameraPos.v[1] /** 1.333*/ + 1) * 0.5 * h);
-				//vertices[j].z = (float)MIN(16, (cameraPos.v[2] + 1) * 0.5 * 16);
+				//vertices[j].z = (float)MIN(65335, (cameraPos.v[2] + 1) * 0.5 * 65536);
 				vertices[j].z = (float)cameraPos.v[2];
 
 				vertices[j].c.r = (int)MIN(255, MAX(0, c.v[0]));
@@ -267,12 +270,12 @@ void render(char *pixels, Light *lg, Obj &o, RMatrix &view, RMatrix &perspective
 			}
 
 			//		//  drawing here //
-			ScanPolygon::traceGouraud(pixels, vertices, 3, zBuffer);
+			ScanPolygon::traceGouraud(pixels, vertices, sz, zBuffer);
 
 			delete[] vertices;
 		}
 	}
-	Chronometer::write("----------");
+	Chronometer::write("----------" + std::to_string(countFace));
 }
 
 void rotationX(REAL angle, RMatrix &mat)

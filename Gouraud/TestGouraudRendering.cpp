@@ -18,7 +18,7 @@ void TestGouraudRendering::initObject()
 {
 	o = new Obj();
 	o->loadObjects("./obj/icosphere.obj");
-	o->applyMaterial(o->objects["Icosphere"], &BRONZE);
+	o->applyMaterial(o->objects["Icosphere"], &JADE);
 
 	Color c = { 255, 255, 255 };
 	lg = createLight(0.0f, 0.0f, 8.0f, c, 255.0f);
