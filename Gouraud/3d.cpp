@@ -12,7 +12,7 @@
 
 
 #define MILLEVINGTQUATRE 1024
-#define NORMALS_OPPOSITE 1
+#define NORMALS_OPPOSITE 0
 #define VEC4MULMAT4 vec4MulMat4Mmx
 
 static std::chrono::steady_clock::time_point beginTime;
@@ -50,9 +50,9 @@ void lookAt(RVector &position, RVector &target, RVector &up, RMatrix &mat)
 	mat.matSetAt(1, 2, up.v[2]);
 	mat.matSetAt(1, 3, -up.vec3DotReal(position));
 
-	mat.matSetAt(2, 0, NORMALS_OPPOSITE ? -forward.v[0] : forward.v[0]);
-	mat.matSetAt(2, 1, NORMALS_OPPOSITE ? -forward.v[1] : forward.v[1]);
-	mat.matSetAt(2, 2, NORMALS_OPPOSITE ? -forward.v[2] : forward.v[2]);
+	mat.matSetAt(2, 0, -forward.v[0]);
+	mat.matSetAt(2, 1, -forward.v[1]);
+	mat.matSetAt(2, 2, -forward.v[2]);
 	mat.matSetAt(2, 3, forward.vec3DotReal(position));
 
 	mat.matSetAt(3, 0, 0.0f);
@@ -129,6 +129,7 @@ void render(char *pixels, Light *lg, Obj &o, RMatrix &view, RMatrix &perspective
 	RVector diffuseLightColorV(VEC3);
 	RVector ambientDiffuseSpecular(VEC3);
 	RVector cameraPos(VEC4);
+	RVector projectionPos(VEC4);
 	Material *currentMaterial;
 
 	lightColor.v[0] = lg->c.r;
@@ -155,9 +156,9 @@ void render(char *pixels, Light *lg, Obj &o, RMatrix &view, RMatrix &perspective
 				worldPos.v[0] = v->pos.x;
 				worldPos.v[1] = v->pos.y;
 				worldPos.v[2] = v->pos.z;
-				worldNorm.v[0] = -f->normals[j].x;
-				worldNorm.v[1] = -f->normals[j].y;
-				worldNorm.v[2] = -f->normals[j].z;
+				worldNorm.v[0] = f->normals[j].x;
+				worldNorm.v[1] = f->normals[j].y;
+				worldNorm.v[2] = f->normals[j].z;
 
 				// Gouraud ////////////
 				worldNorm.vecNormalize();
@@ -203,20 +204,41 @@ void render(char *pixels, Light *lg, Obj &o, RMatrix &view, RMatrix &perspective
 				c.v[2] = ambientDiffuseSpecular.v[2];
 
 				// Projection /////////
+
+				//float[] worldPosVec = { worldPos.x, worldPos.y, worldPos.z, 1 };
+				//float[] cameraPosVec = new float[4];
+				//vec4MultiplyMat4(cameraPosVec, worldPosVec, viewPM);
+				//float[] projectionPosVec = new float[4];
+				//vec4MultiplyMat4(projectionPosVec, cameraPosVec, perspectivePM);
+				//vec4Divide(projectionPosVec, projectionPosVec, projectionPosVec[3]);
+
+
+
 				cameraPos.v[0] = worldPos.v[0];
 				cameraPos.v[1] = worldPos.v[1];
 				cameraPos.v[2] = worldPos.v[2];
 				cameraPos.v[3] = 1.0f;
 
 				cameraPos.vec4MulMat4(view);
-				cameraPos.vec4MulMat4(perspective);
-				cameraPos.vecMulScalar(1 / cameraPos.v[3]);
+
+				// ERROR
+				projectionPos.v[0] = cameraPos.v[0];
+				projectionPos.v[1] = cameraPos.v[1];
+				projectionPos.v[2] = cameraPos.v[2];
+				projectionPos.v[3] = 1.0f;
+				projectionPos.vec4MulMat4(perspective);
+				projectionPos.vecMulScalar(1 / projectionPos.v[3]);
+				//cameraPos.vec4MulMat4(perspective);
+				//cameraPos.vecMulScalar(1 / cameraPos.v[3]);
 
 				// Feed polygons /////////
 				// 1.333 to compensate resolution ratio
-				vertices[j].x = (float)MIN(w - 1, (cameraPos.v[0] + 1) * 0.5 * w);
-				vertices[j].y = (float)MIN(h - 1, (cameraPos.v[1] * 1/*.333*/ + 1) * 0.5 * h);
-				vertices[j].z = (float)MIN(16, (cameraPos.v[2] + 1) * 0.5 * 16);
+				vertices[j].x = (float)MIN(w - 1, (projectionPos.v[0] + 1) * 0.5 * w);
+				vertices[j].y = (float)MIN(h - 1, (projectionPos.v[1] + 1) * 0.5 * h);
+				//vertices[j].x = (float)MIN(w - 1, (cameraPos.v[0] + 1) * 0.5 * w);
+				//vertices[j].y = (float)MIN(h - 1, (cameraPos.v[1] /** 1.333*/ + 1) * 0.5 * h);
+				//vertices[j].z = (float)MIN(16, (cameraPos.v[2] + 1) * 0.5 * 16);
+				vertices[j].z = (float)cameraPos.v[2];
 
 				vertices[j].c.r = (int)MIN(255, MAX(0, c.v[0]));
 				vertices[j].c.g = (int)MIN(255, MAX(0, c.v[1]));
@@ -245,9 +267,7 @@ void render(char *pixels, Light *lg, Obj &o, RMatrix &view, RMatrix &perspective
 			}
 
 			//		//  drawing here //
-			for (int i = 0; i < sz; i++) {
-				ScanPolygon::traceGouraud(pixels, vertices, 3, zBuffer);
-			}
+			ScanPolygon::traceGouraud(pixels, vertices, 3, zBuffer);
 
 			delete[] vertices;
 		}

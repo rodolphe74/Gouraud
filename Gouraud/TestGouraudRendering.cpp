@@ -17,13 +17,13 @@ float *TestGouraudRendering::zBuffer;
 void TestGouraudRendering::initObject()
 {
 	o = new Obj();
-	o->loadObjects("./obj/cube.obj");
-	o->applyMaterial(o->objects["Cube"], &TURQUOISE);
+	o->loadObjects("./obj/icosphere.obj");
+	o->applyMaterial(o->objects["Icosphere"], &BRONZE);
 
 	Color c = { 255, 255, 255 };
 	lg = createLight(0.0f, 0.0f, 8.0f, c, 255.0f);
 
-	_fromPosition_ = new RVector({ 0.0f, 0.0f, 5.0f }, VTYPE::VEC3);
+	_fromPosition_ = new RVector({ 0.0f, 0.0f, 3.0f }, VTYPE::VEC3);
 	_toTarget_ = new RVector({ 0.0f, 0.0f, 0.0f }, VTYPE::VEC3);
 	_up_ = new RVector({ 0.0f, 1.0f, 0.0f }, VTYPE::VEC3);
 	_view_ = new RMatrix(MTYPE::MAT44);
@@ -33,6 +33,8 @@ void TestGouraudRendering::initObject()
 	_translationY_ = new RVector(VEC4);
 
 	lookAt(*_fromPosition_, *_toTarget_, *_up_, *_view_);
+	
+
 	perspective((float)TO_RADIAN(90.0f), 1.0f, 0.1f, 100.0f, *_perspective_);
 	rotationY((float)TO_RADIAN(1.0f), *_rotationY_);
 	rotationZ((float)TO_RADIAN(0.8f), *_rotationZ_);
@@ -49,7 +51,8 @@ void TestGouraudRendering::renderObject(char *pixels, int w, int h, int pitch, b
 	}
 	// z-buffer
 	zBuffer = new float[640 * 640];
-	memset(zBuffer, 0, sizeof(float) * 640 * 640);
+	for (int i = 0; i < 640 * 640; i++)
+		zBuffer[i] = -FLT_MAX;
 
 	// Transformations
 	transformObject(*o, *_rotationY_);
