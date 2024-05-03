@@ -7,3 +7,4 @@ Software 3d from the object to every pixel.
 <img src="images/gouraud.gif" width=320>
 
 # Links
+- Self inspirated method for polygon scanline drawing.
