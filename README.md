@@ -7,4 +7,6 @@ Software 3d from the object to every pixel.
 <img src="images/gouraud.gif" width=320>
 
 # Links
-- Self inspirated method for polygon scanline drawing.
+- Self inspirated method for polygon scanline drawing using [pnpoly](https://wrfranklin.org/Research/Short_Notes/pnpoly.html) to know if a point is in a polygon.
+- 3D transformations from https://github.com/felselva/mathc code.
+- Linear interpolation in polygons from https://codeplea.com/triangular-interpolation.
