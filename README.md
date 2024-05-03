@@ -11,6 +11,6 @@ Software 3d from the object to every pixel.
 - 3D transformations from https://github.com/felselva/mathc code but rewrite of my own matrix lib.
 - Linear interpolation in polygons from https://codeplea.com/triangular-interpolation.
 
-# Sample
+# Samples
 
-<img src="images/torus.gif" width=320>
+<img src="images/torus.gif" width=320> <img src="images/bull.gif" width=320>
