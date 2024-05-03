@@ -1,3 +1,3 @@
 # Gouraud
 
-<img src="images/gouraud.gif">
+<img src="images/gouraud.gif" width=320>
