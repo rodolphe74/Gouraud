@@ -55,7 +55,7 @@ void TestGouraudPolygon3::drawPolygons(char *pixels, int w, int h, int pitch, bo
 	}
 
 	// draw the polygon
-	ScanPolygon::traceGouraud(pixels, poly3, 3);
+	ScanPolygon::traceGouraud(pixels, poly3, 3, w, h);
 
 	// next frame transformation
 	translationToOrigin.translation2(-vCenter.x, -vCenter.y);

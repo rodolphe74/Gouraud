@@ -66,8 +66,8 @@ void TestFlatPolygon::drawPolygons(char *pixels, int w, int h, int pitch, bool t
 	}
 
 	// draw the polygon
-	ScanPolygon::trace(pixels, poly3, 3, BLUE);
-	ScanPolygon::trace(pixels, poly6, 6, GREEN);
+	ScanPolygon::trace(pixels, poly3, 3, BLUE, w, h);
+	ScanPolygon::trace(pixels, poly6, 6, GREEN, w, h);
 
 	// next frame transformation
 	translationToOrigin.translation2(-vCenter.x, -vCenter.y);

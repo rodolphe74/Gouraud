@@ -270,7 +270,7 @@ void render(char *pixels, Light *lg, Obj &o, RMatrix &view, RMatrix &perspective
 			}
 
 			//		//  drawing here //
-			ScanPolygon::traceGouraud(pixels, vertices, sz, zBuffer);
+			ScanPolygon::traceGouraud(pixels, vertices, sz, w, h, zBuffer);
 
 			delete[] vertices;
 		}

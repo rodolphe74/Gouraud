@@ -20,6 +20,7 @@ public:
 	static RMatrix *_rotationY_;
 	static RMatrix *_rotationZ_;
 	static RVector *_translationY_;
+	static RMatrix *_demi_tour_;
 	static float *zBuffer;
 
 
