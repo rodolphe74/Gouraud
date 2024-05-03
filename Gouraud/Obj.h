@@ -46,13 +46,14 @@ typedef struct _light {
 	Color c;
 } Light;
 
-
+// Kd -  Ks - Ka - 1.0f - Ns  (Ka != 1.0f)
 static Material BRONZE = { { 1.0f, 0.5f, 0.31f }, { 0.5f, 0.5f, 0.5f }, { 1.0f, 0.5f, 0.31f }, 1.0f, 52 };
 static Material JADE = { { 0.54f, 0.89f, 0.63f }, { 0.316228f, 0.316228f, 0.316228f}, { 0.135f, 0.2225f, 0.1575f }, 1.0f, 13 };
 static Material TURQUOISE = { { 0.396f, 0.74151f, 0.69102f }, { 0.297254f, 0.30829f, 0.306678f }, { 0.1f, 0.18725f, 0.1745f }, 1.0f, 26 };
 static Material BLACK_RUBBER = { { 0.01f, 0.01f, 0.01f }, { 0.4f, 0.4f, 0.4f }, { 0.02f, 0.02f, 0.02f }, 1.0f, 20 };
 static Material CHROME = { { 0.4f, 0.4f, 0.4f }, { 0.774597f, 0.774597f, 0.774597f }, { 0.25f, 0.25f, 0.25f }, 1.0f, 76 };
 static Material CYAN_PLASTIC = { { 0.0f, 0.50980392f, 0.50980392f }, { 0.50196078f, 0.50196078f, 0.50196078f  }, { 0.0f, 0.1f, 0.06f }, 1.0f, 32 };
+static Material YELLOWG = { { 0.800000f, 0.538250f, 0.008878f }, { 0.50f, 0.50f, 0.50f  }, { 0.0f, 0.1f, 0.06f }, 1.0f, 32 };
 
 
 class Obj

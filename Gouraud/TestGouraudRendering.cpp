@@ -22,14 +22,19 @@ void TestGouraudRendering::initObject()
 	//o->applyMaterial(o->objects["Lamp_Mesh"], &BRONZE);
 	//o->applyMaterial(o->objects["Lamp_chain_Mesh.001"], &TURQUOISE);
 
-	o->loadObjects("./obj/torus_smooth.obj");
-	o->applyMaterial(o->objects["Torus"], &TURQUOISE);
+	//o->loadObjects("./obj/torus_smooth.obj");
+	//o->applyMaterial(o->objects["Torus"], &TURQUOISE);
+
+	o->loadObjects("./obj/lpbull.obj");
+	// o->loadMaterials("./obj/lpbull.mtl");	// TODO:check pointers
+	// o->applyMaterials();
+	o->applyMaterial(o->objects["polySurface11"], &YELLOWG);
 
 	Color c = { 255, 255, 255 };
 	lg = createLight(0.0f, 0.0f, 8.0f, c, 255.0f);
 
-	_fromPosition_ = new RVector({ 0.0f, 0.0f, 3.0f }, VTYPE::VEC3);
-	//_fromPosition_ = new RVector({ 0.0f, -2.0f, 5.0f }, VTYPE::VEC3);
+	// _fromPosition_ = new RVector({ 0.0f, 0.0f, 3.0f }, VTYPE::VEC3);
+	_fromPosition_ = new RVector({ 0.0f, -1.3f, 3.0f }, VTYPE::VEC3);
 	_toTarget_ = new RVector({ 0.0f, 0.0f, 0.0f }, VTYPE::VEC3);
 	_up_ = new RVector({ 0.0f, 1.0f, 0.0f }, VTYPE::VEC3);
 	_view_ = new RMatrix(MTYPE::MAT44);
@@ -64,7 +69,7 @@ void TestGouraudRendering::renderObject(char *pixels, int w, int h, int pitch, b
 
 	// Transformations
 	transformObject(*o, *_rotationY_);
-	transformObject(*o, *_rotationZ_);
+	//transformObject(*o, *_rotationZ_);
 
 	render(pixels, lg, *o, *_view_, *_perspective_, *_fromPosition_, w, h, zBuffer);
 }
