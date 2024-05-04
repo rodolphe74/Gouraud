@@ -1,21 +1,21 @@
-#include "TestGouraudRendering.h"
+#include "TestPhongRendering.h"
 #include "TestRoot.h"
 
-Obj *TestGouraudRendering::o;
-Light *TestGouraudRendering::lg;
-RVector *TestGouraudRendering::_fromPosition_;
-RVector *TestGouraudRendering::_toTarget_;
-RVector *TestGouraudRendering::_up_;
-RMatrix *TestGouraudRendering::_view_;
-RMatrix *TestGouraudRendering::_perspective_;
-RMatrix *TestGouraudRendering::_rotationY_;
-RMatrix *TestGouraudRendering::_rotationZ_;
-RMatrix *TestGouraudRendering::_demi_tour_;
-RVector *TestGouraudRendering::_translationY_;
-float *TestGouraudRendering::zBuffer;
+Obj *TestPhongRendering::o;
+Light *TestPhongRendering::lg;
+RVector *TestPhongRendering::_fromPosition_;
+RVector *TestPhongRendering::_toTarget_;
+RVector *TestPhongRendering::_up_;
+RMatrix *TestPhongRendering::_view_;
+RMatrix *TestPhongRendering::_perspective_;
+RMatrix *TestPhongRendering::_rotationY_;
+RMatrix *TestPhongRendering::_rotationZ_;
+RMatrix *TestPhongRendering::_demi_tour_;
+RVector *TestPhongRendering::_translationY_;
+float *TestPhongRendering::zBuffer;
 
 
-void TestGouraudRendering::initObject()
+void TestPhongRendering::initObject()
 {
 	o = new Obj();
 	//o->loadObjects("./obj/loupiotte.obj");
@@ -47,8 +47,8 @@ void TestGouraudRendering::initObject()
 	lookAt(*_fromPosition_, *_toTarget_, *_up_, *_view_);
 
 	perspective((float)TO_RADIAN(90.0f), 1.0f, 0.1f, 100.0f, *_perspective_);
-	rotationY((float)TO_RADIAN(1.0f/10), *_rotationY_);
-	rotationZ((float)TO_RADIAN(0.5f/10), *_rotationZ_);
+	rotationY((float)TO_RADIAN(1.0f / 10), *_rotationY_);
+	rotationZ((float)TO_RADIAN(0.5f / 10), *_rotationZ_);
 
 	//rotationX((float)TO_RADIAN(180.0f), *_demi_tour_);
 	//transformObject(*o, *_demi_tour_);
@@ -57,7 +57,7 @@ void TestGouraudRendering::initObject()
 
 
 
-void TestGouraudRendering::renderObject(char *pixels, int w, int h, int pitch, bool tictac)
+void TestPhongRendering::renderObject(char *pixels, int w, int h, int pitch, bool tictac)
 {
 	int32_t *row = (int32_t *)pixels;
 	for (int i = 0; i < w * h; i++) {
@@ -71,10 +71,10 @@ void TestGouraudRendering::renderObject(char *pixels, int w, int h, int pitch, b
 	transformObject(*o, *_rotationY_);
 	transformObject(*o, *_rotationZ_);
 
-	render(GOURAUD, pixels, lg, *o, *_view_, *_perspective_, *_fromPosition_, w, h, zBuffer);
+	render(PHONG, pixels, lg, *o, *_view_, *_perspective_, *_fromPosition_, w, h, zBuffer);
 }
 
-void TestGouraudRendering::close()
+void TestPhongRendering::close()
 {
 	delete o;
 	delete _fromPosition_;

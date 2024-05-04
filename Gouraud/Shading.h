@@ -17,6 +17,6 @@ public:
 		Material *currentMaterial, RVector &ambientDiffuseSpecular, RVector &viewDir, RVector &from,
 		RVector &negLightDir, RVector &reflectDir, RVector &specular, RVector &lightColor, RVector &objectColor,
 		RVector &c, RVector &cameraPos, RMatrix &view, RVector &projectionPos,
-		RMatrix &perspective, int x, int y, int w, int h);
+		RMatrix &perspective);
 };
 

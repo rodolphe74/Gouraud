@@ -1,5 +1,6 @@
 #pragma once
 #include "Globals.h"
+#include "Obj.h"
 #include "RVector.h"
 #include <cmath>
 
@@ -41,23 +42,32 @@ typedef GVertex *TrianglePtr[3];
 class ScanPolygon
 {
 private:
-	static bool pnpoly(GVertex p[], size_t pLength, GVertex& t);
-	static GVertex* getFrame(GVertex polygon[], size_t polygonLength, GVertex* square);
-	static void gouraudShading(GVertex p[3], char* pixels, int pLength, int w, int h, float *zBuffer = nullptr);
-	static void phongShading(GVertex p[3], char *pixels, int pLength, int w, int h, float *zBuffer = nullptr);
-	static int verticesSorter(void* ctxvar, const void* _a, const void* _b);
+	static bool pnpoly(GVertex p[], size_t pLength, GVertex &t);
+	static GVertex *getFrame(GVertex polygon[], size_t polygonLength, GVertex *square);
+	static void gouraudShading(GVertex p[3], char *pixels, int pLength, int w, int h, float *zBuffer = nullptr);
+	static void phongShading(GVertex p[3], char *pixels, int pLength, int w, int h,
+		RVector &worldNorm, RVector &lightDir, Light *lg, RVector &worldPos,
+		RVector &diffuseLightColorV, Material *currentMaterial, RVector &ambientDiffuseSpecular, RVector &viewDir, RVector &from, RVector &negLightDir,
+		RVector &reflectDir, RVector &specular, RVector &lightColor, RVector &objectColor, RVector &c, RVector &cameraPos, RMatrix &view,
+		RVector &projectionPos, RMatrix &perspective, float *zBuffer = nullptr);
+	static int verticesSorter(void *ctxvar, const void *_a, const void *_b);
 	static int verticesBUSorter(void *ctxvar, const void *_a, const void *_b);
 	static void getTriangle(Triangle t, GVertex &p1, GVertex &p2, GVertex &p3);
-	
+
 
 public:
 	static GVertex findCentroid(GVertex p[], size_t pLength);
 	static void sortVertices(GVertex p[], size_t pLength);
 	static void sortVerticesUpBottom(GVertex p[], size_t pLength);
 	static void trace(char *pixels, GVertex p[], size_t pLength, Color c, int w, int h);
-	static void traceGouraud(char* pixels, GVertex p[], size_t pLength, int w, int h, float *zBuffer = nullptr);
+	static void traceGouraud(char *pixels, GVertex p[], size_t pLength, int w, int h, float *zBuffer = nullptr);
 
-	static void tracePhong(char *pixels, GVertex p[], size_t pLength, int w, int h, float *zBuffer = nullptr);
+	static void tracePhong(
+		char *pixels, GVertex p[], size_t pLength, int w, int h,
+		RVector &worldNorm, RVector &lightDir, Light *lg, RVector &worldPos, RVector &diffuseLightColorV, Material *currentMaterial,
+		RVector &ambientDiffuseSpecular, RVector &viewDir, RVector &from, RVector &negLightDir, RVector &reflectDir, RVector &specular,
+		RVector &lightColor, RVector &objectColor, RVector &c, RVector &cameraPos, RMatrix &view, RVector &projectionPos,
+		RMatrix &perspective, float *zBuffer = nullptr);
 
 	static void debugPolygon(GVertex p[], size_t pLength);
 	static void getVector3FromGVertexNormal(const GVertex &v, RVector &r);

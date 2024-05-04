@@ -66,6 +66,9 @@
     <ClCompile Include="Shading.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="TestPhongRendering.cpp">
+      <Filter>Fichiers sources\Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -106,6 +109,9 @@
     </ClInclude>
     <ClInclude Include="Shading.h">
       <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="TestPhongRendering.h">
+      <Filter>Fichiers d%27en-tête\Tests</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

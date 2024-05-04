@@ -1,14 +1,15 @@
 #define NOMINMAX
 
-#include "ScanPolygon.h"
 #include "Chronometer.h"
-#include <iostream>
-#include <d3d9.h>
+#include "ScanPolygon.h"
+#include "Shading.h"
 #include <algorithm>
+#include <d3d9.h>
+#include <iostream>
 #include <string>
 
 
-bool ScanPolygon::pnpoly(GVertex p[], size_t pLength, GVertex& t)
+bool ScanPolygon::pnpoly(GVertex p[], size_t pLength, GVertex &t)
 {
 	// https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
 	size_t i, j = 0;
@@ -21,7 +22,7 @@ bool ScanPolygon::pnpoly(GVertex p[], size_t pLength, GVertex& t)
 	return c;
 }
 
-GVertex* ScanPolygon::getFrame(GVertex polygon[], size_t polygonLength, GVertex* frame)
+GVertex *ScanPolygon::getFrame(GVertex polygon[], size_t polygonLength, GVertex *frame)
 {
 	float minx = std::numeric_limits<float>::max();
 	float miny = std::numeric_limits<float>::max();
@@ -125,7 +126,7 @@ void ScanPolygon::gouraudShading(GVertex p[3], char *pixels, int pLength, int w,
 				int offset = (w * y + x);
 				if (zBuffer && z > zBuffer[x + y * w]) {
 					*(row + (offset)) = D3DCOLOR_XRGB(ucr, ucg, ucb);
-					zBuffer[x + w * y] = z;
+					zBuffer[offset] = z;
 				}
 				else if (!zBuffer) {
 					*(row + (offset)) = D3DCOLOR_XRGB(ucr, ucg, ucb);
@@ -136,9 +137,13 @@ void ScanPolygon::gouraudShading(GVertex p[3], char *pixels, int pLength, int w,
 	delete[] frame;
 }
 
-void ScanPolygon::phongShading(GVertex p[3], char *pixels, int pLength, int w, int h, float *zBuffer)
+void ScanPolygon::phongShading(
+	GVertex p[3], char *pixels, int pLength, int w, int h, RVector &worldNorm, RVector &lightDir, Light *lg, RVector &worldPos,
+	RVector &diffuseLightColorV, Material *currentMaterial, RVector &ambientDiffuseSpecular, RVector &viewDir, RVector &from, RVector &negLightDir,
+	RVector &reflectDir, RVector &specular, RVector &lightColor, RVector &objectColor, RVector &c, RVector &cameraPos, RMatrix &view, RVector &projectionPos,
+	RMatrix &perspective, float *zBuffer)
 {
-	//p[0].n.x;
+
 	DWORD *row = (DWORD *)pixels;
 	GVertex *frame = new GVertex[4];
 	frame = getFrame(p, pLength, frame);
@@ -206,17 +211,43 @@ void ScanPolygon::phongShading(GVertex p[3], char *pixels, int pLength, int w, i
 				sum.vecAddVec(v1);
 				sum.vecAddVec(v2);
 
-				//unsigned char ucr = (unsigned char)r;
-				//unsigned char ucg = (unsigned char)g;
-				//unsigned char ucb = (unsigned char)b;
 
-				int offset = (w * y + x);
+				// find pixel color regarding normal interpolation
+				// x & y & n (= sum)
+				// pixel projection & lightning here
+
+				// projection
+				//cameraPos.v[0] = (float)x;
+				//cameraPos.v[1] = (float)y;
+				//cameraPos.v[2] = (float)z;
+				//cameraPos.v[3] = 1.0f;
+				//cameraPos.vec4MulMat4(view);
+				//projectionPos.v[0] = cameraPos.v[0];
+				//projectionPos.v[1] = cameraPos.v[1];
+				//projectionPos.v[2] = cameraPos.v[2];
+				//projectionPos.v[3] = 1.0f;
+				//projectionPos.vec4MulMat4(perspective);
+				//projectionPos.vecMulScalar(1 / projectionPos.v[3]);
+				//float px = (float)MIN(w - 1, (projectionPos.v[0] + 1) * 0.5 * w);
+				//float py = (float)MIN(h - 1, (projectionPos.v[1] /** 1.333*/ + 1) * 0.5 * h);
+				//float pz = (float)cameraPos.v[2];
+
+				// color
+				Shading::findPhongColorAtPixel(/*worldNorm*/sum, lightDir, lg, worldPos, diffuseLightColorV, currentMaterial, ambientDiffuseSpecular, viewDir,
+					from, negLightDir, reflectDir, specular, lightColor, objectColor, c, cameraPos, view, projectionPos, perspective);
+
+				unsigned char ucr = (unsigned char)c.v[0];
+				unsigned char ucg = (unsigned char)c.v[1];
+				unsigned char ucb = (unsigned char)c.v[2];
+
+				// draw pixel
+				int offset = (w * (int)y + (int)x);
 				if (zBuffer && z > zBuffer[x + y * w]) {
-					//*(row + (offset)) = D3DCOLOR_XRGB(ucr, ucg, ucb);
-					zBuffer[x + w * y] = z;
+					*(row + (offset)) = D3DCOLOR_XRGB(ucr, ucg, ucb);
+					zBuffer[offset] = z;
 				}
 				else if (!zBuffer) {
-					//*(row + (offset)) = D3DCOLOR_XRGB(ucr, ucg, ucb);
+					*(row + (offset)) = D3DCOLOR_XRGB(ucr, ucg, ucb);
 				}
 			}
 		}
@@ -238,11 +269,11 @@ GVertex ScanPolygon::findCentroid(GVertex p[], size_t pLength)
 	return center;
 }
 
-int ScanPolygon::verticesSorter(void* ctxvar, const void* _a, const void* _b)
+int ScanPolygon::verticesSorter(void *ctxvar, const void *_a, const void *_b)
 {
-	GVertex a = *(GVertex*)_a;
-	GVertex b = *(GVertex*)_b;
-	GVertex c = *(GVertex*)ctxvar;
+	GVertex a = *(GVertex *)_a;
+	GVertex b = *(GVertex *)_b;
+	GVertex c = *(GVertex *)ctxvar;
 	double a1 = (TO_DEGREE_INT(std::atan2(a.x - c.x, a.y - c.y)) + 360) % 360;
 	double a2 = (TO_DEGREE_INT(std::atan2(b.x - c.x, b.y - c.y)) + 360) % 360;
 	return (int)(a1 - a2);	// (counter clockwise  : a2 - a1)  (for clockwise : a1 - a2)
@@ -276,10 +307,10 @@ void ScanPolygon::sortVerticesUpBottom(GVertex p[], size_t pLength)
 	int a = 0;
 }
 
-void ScanPolygon::trace(char* pixels, GVertex p[], size_t pLength, Color c, int w, int h)
+void ScanPolygon::trace(char *pixels, GVertex p[], size_t pLength, Color c, int w, int h)
 {
-	DWORD* row = (DWORD*)pixels;
-	GVertex* frame = new GVertex[4];
+	DWORD *row = (DWORD *)pixels;
+	GVertex *frame = new GVertex[4];
 	frame = getFrame(p, pLength, frame);
 
 	float y1 = frame[0].y;
@@ -322,7 +353,7 @@ void ScanPolygon::trace(char* pixels, GVertex p[], size_t pLength, Color c, int 
 	delete[] frame;
 }
 
-void ScanPolygon::traceGouraud(char* pixels, GVertex p[], size_t pLength, int w, int h, float *zBuffer)
+void ScanPolygon::traceGouraud(char *pixels, GVertex p[], size_t pLength, int w, int h, float *zBuffer)
 {
 	if (pLength > 3) {
 
@@ -335,7 +366,7 @@ void ScanPolygon::traceGouraud(char* pixels, GVertex p[], size_t pLength, int w,
 		}
 
 		delete[] triangles;
-		
+
 	}
 	else {
 		// and gouraud on each
@@ -343,9 +374,21 @@ void ScanPolygon::traceGouraud(char* pixels, GVertex p[], size_t pLength, int w,
 	}
 }
 
-void ScanPolygon::tracePhong(char *pixels, GVertex p[], size_t pLength, int w, int h, float *zBuffer)
+void ScanPolygon::tracePhong(
+	char *pixels, GVertex p[], size_t pLength, int w, int h, RVector &worldNorm, RVector &lightDir, Light *lg, RVector &worldPos,
+	RVector &diffuseLightColorV, Material *currentMaterial, RVector &ambientDiffuseSpecular, RVector &viewDir, RVector &from, RVector &negLightDir,
+	RVector &reflectDir, RVector &specular, RVector &lightColor, RVector &objectColor, RVector &c, RVector &cameraPos, RMatrix &view,
+	RVector &projectionPos, RMatrix &perspective, float *zBuffer)
 {
+	if (pLength > 3) {
+		// TODO
+	}
+	else {
+		phongShading(p, pixels, pLength, w, h, worldNorm, lightDir, lg, worldPos, diffuseLightColorV, currentMaterial, ambientDiffuseSpecular,
+			viewDir, from, negLightDir, reflectDir, specular, lightColor, objectColor, c, cameraPos, view, projectionPos, perspective, zBuffer);
+	}
 }
+
 
 void ScanPolygon::debugPolygon(GVertex p[], size_t pLength)
 {
