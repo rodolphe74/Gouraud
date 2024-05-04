@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <string>
 
+
 bool ScanPolygon::pnpoly(GVertex p[], size_t pLength, GVertex& t)
 {
 	// https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
@@ -113,6 +114,10 @@ void ScanPolygon::gouraudShading(GVertex p[3], char *pixels, int pLength, int w,
 				float b = p[0].c.b * wv0 + p[1].c.b * wv1 + p[2].c.b * wv2;
 				float z = p[0].z * wv0 + p[1].z * wv1 + p[2].z * wv2;
 
+				RVector v0(VEC3);
+				RVector v1(VEC3);
+				RVector v2(VEC3);
+
 				unsigned char ucr = (unsigned char)r;
 				unsigned char ucg = (unsigned char)g;
 				unsigned char ucb = (unsigned char)b;
@@ -124,6 +129,94 @@ void ScanPolygon::gouraudShading(GVertex p[3], char *pixels, int pLength, int w,
 				}
 				else if (!zBuffer) {
 					*(row + (offset)) = D3DCOLOR_XRGB(ucr, ucg, ucb);
+				}
+			}
+		}
+	}
+	delete[] frame;
+}
+
+void ScanPolygon::phongShading(GVertex p[3], char *pixels, int pLength, int w, int h, float *zBuffer)
+{
+	//p[0].n.x;
+	DWORD *row = (DWORD *)pixels;
+	GVertex *frame = new GVertex[4];
+	frame = getFrame(p, pLength, frame);
+
+	float y1 = frame[0].y;
+	float y2 = y1;
+	float x1 = frame[0].x;
+	float x2 = x1;
+	for (int i = 1; i < 4; i++) {
+		if (frame[i].y != y1) {
+			y2 = frame[i].y;
+			break;
+		}
+	}
+	for (int i = 1; i < 4; i++) {
+		if (frame[i].x != x1) {
+			x2 = frame[i].x;
+			break;
+		}
+	}
+	float t = y1;
+	y1 = std::min(y1, y2);
+	y2 = std::max(t, y2);
+	t = x1;
+	x1 = std::min(x1, x2);
+	x2 = std::max(t, x2);
+
+
+	int iy1 = (int)std::round(y1);
+	int iy2 = (int)std::round(y2);
+	int ix1 = (int)std::round(x1);
+	int ix2 = (int)std::round(x2);
+	for (int y = iy1; y <= iy2; y++) {
+		for (int x = ix1; x <= ix2; x++) {
+			GVertex gv = { (float)x, (float)y };
+			if (pnpoly(p, pLength, gv) && y >= 0 && y < h && x >= 0 && x < w) {
+
+				// Phong on each triangle
+
+
+				// Barycentre
+				// https://codeplea.com/triangular-interpolation
+				float wv0 = (p[1].y - p[2].y) * (x - p[2].x) + (p[2].x - p[1].x) * (y - p[2].y);
+				wv0 /= (p[1].y - p[2].y) * (p[0].x - p[2].x) + (p[2].x - p[1].x) * (p[0].y - p[2].y);
+				float wv1 = (p[2].y - p[0].y) * (x - p[2].x) + (p[0].x - p[2].x) * (y - p[2].y);
+				wv1 /= (p[1].y - p[2].y) * (p[0].x - p[2].x) + (p[2].x - p[1].x) * (p[0].y - p[2].y);
+				float wv2 = 1 - wv0 - wv1;
+				//float r = p[0].c.r * wv0 + p[1].c.r * wv1 + p[2].c.r * wv2;
+				//float g = p[0].c.g * wv0 + p[1].c.g * wv1 + p[2].c.g * wv2;
+				//float b = p[0].c.b * wv0 + p[1].c.b * wv1 + p[2].c.b * wv2;
+				float z = p[0].z * wv0 + p[1].z * wv1 + p[2].z * wv2;
+
+
+				RVector v0(VEC3);
+				RVector v1(VEC3);
+				RVector v2(VEC3);
+				RVector sum(VEC3);
+				getVector3FromGVertexNormal(p[0], v0);
+				getVector3FromGVertexNormal(p[1], v1);
+				getVector3FromGVertexNormal(p[2], v2);
+				v0.vecMulScalar(wv0);
+				v1.vecMulScalar(wv1);
+				v2.vecMulScalar(wv2);
+				sum.vecAddVec(v0);
+				sum.vecAddVec(v1);
+				sum.vecAddVec(v2);
+
+				//unsigned char ucr = (unsigned char)r;
+				//unsigned char ucg = (unsigned char)g;
+				//unsigned char ucb = (unsigned char)b;
+
+				int offset = (w * y + x);
+				if (zBuffer && z > zBuffer[x + y * w]) {
+					//*(row + (offset)) = D3DCOLOR_XRGB(ucr, ucg, ucb);
+					zBuffer[x + w * y] = z;
+				}
+				else if (!zBuffer) {
+					//*(row + (offset)) = D3DCOLOR_XRGB(ucr, ucg, ucb);
 				}
 			}
 		}
@@ -250,6 +343,10 @@ void ScanPolygon::traceGouraud(char* pixels, GVertex p[], size_t pLength, int w,
 	}
 }
 
+void ScanPolygon::tracePhong(char *pixels, GVertex p[], size_t pLength, int w, int h, float *zBuffer)
+{
+}
+
 void ScanPolygon::debugPolygon(GVertex p[], size_t pLength)
 {
 	Chronometer::write("Polygon:");
@@ -259,4 +356,11 @@ void ScanPolygon::debugPolygon(GVertex p[], size_t pLength)
 	}
 	Chronometer::write("\n");
 
+}
+
+void ScanPolygon::getVector3FromGVertexNormal(const GVertex &v, RVector &r)
+{
+	r.v[0] = v.n.x;
+	r.v[1] = v.n.y;
+	r.v[2] = v.n.z;
 }

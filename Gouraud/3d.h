@@ -7,6 +7,7 @@
 #include "RMatrix.h"
 #include "RVector.h"
 #include "obj.h"
+#include "ScanPolygon.h"
 
 
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
@@ -24,12 +25,15 @@ namespace Fx {
 	} Vertex;
 }
 
+enum RENDER_TYPE { GOURAUD = 0, PHONG };
+
 void lookAt(RVector &position, RVector &target, RVector &up, RMatrix &mat);
 void perspective(float fov_y, float aspect, float n, float f, RMatrix &mat);
 Light *createLight(float x, float y, float z, Color c, float i);
-void render(char *pixels, Light *l, Obj &o, RMatrix &view, RMatrix &perspective, RVector &from, int w, int h, float *zBuffer);
+void render(RENDER_TYPE rt, char *pixels, Light *l, Obj &o, RMatrix &view, RMatrix &perspective, RVector &from, int w, int h, float *zBuffer);
 void rotationX(REAL angle, RMatrix &mat);
 void rotationY(REAL angle, RMatrix &mat);
 void rotationZ(REAL angle, RMatrix &mat);
 void translateObject(Obj &o, RMatrix &v);
 void transformObject(Obj &o, RMatrix &m);
+

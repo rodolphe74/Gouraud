@@ -63,6 +63,9 @@
     <ClCompile Include="TestGouraudPolygon3.cpp">
       <Filter>Fichiers sources\Tests</Filter>
     </ClCompile>
+    <ClCompile Include="Shading.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -100,6 +103,9 @@
     </ClInclude>
     <ClInclude Include="TestGouraudPolygon3.h">
       <Filter>Fichiers d%27en-tête\Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="Shading.h">
+      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -140,6 +140,7 @@
     <ClCompile Include="RMatrix.cpp" />
     <ClCompile Include="RVector.cpp" />
     <ClCompile Include="ScanPolygon.cpp" />
+    <ClCompile Include="Shading.cpp" />
     <ClCompile Include="TestFlatPolygon.cpp" />
     <ClCompile Include="TestGouraudPolygon.cpp" />
     <ClCompile Include="TestGouraudPolygon3.cpp" />
@@ -154,6 +155,7 @@
     <ClInclude Include="RMatrix.h" />
     <ClInclude Include="RVector.h" />
     <ClInclude Include="ScanPolygon.h" />
+    <ClInclude Include="Shading.h" />
     <ClInclude Include="TestFlatPolygon.h" />
     <ClInclude Include="TestGouraudPolygon.h" />
     <ClInclude Include="TestGouraudPolygon3.h" />
