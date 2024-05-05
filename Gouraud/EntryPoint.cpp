@@ -24,7 +24,7 @@ int WINAPI WinMain(HINSTANCE _In_ hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	//t.addTests(t0);
 	//t.addTests(t1);
 	//t.addTests(t2);
-	// t.addTests(t3);
+	//t.addTests(t3);
 	t.addTests(t4);
 	t.runTests(hInstance);
 

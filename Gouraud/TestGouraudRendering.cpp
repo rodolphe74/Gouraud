@@ -22,7 +22,7 @@ void TestGouraudRendering::initObject()
 	//o->applyMaterial(o->objects["Lamp_Mesh"], &BRONZE);
 	//o->applyMaterial(o->objects["Lamp_chain_Mesh.001"], &TURQUOISE);
 
-	o->loadObjects("./obj/cubetri.obj");
+	o->loadObjects("./obj/cubetris.obj");
 	o->applyMaterial(o->objects["Cube"], &TURQUOISE);
 
 	//o->loadObjects("./obj/lpbull.obj");

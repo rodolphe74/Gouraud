@@ -22,8 +22,8 @@ void TestPhongRendering::initObject()
 	//o->applyMaterial(o->objects["Lamp_Mesh"], &BRONZE);
 	//o->applyMaterial(o->objects["Lamp_chain_Mesh.001"], &TURQUOISE);
 
-	o->loadObjects("./obj/cubetri.obj");
-	o->applyMaterial(o->objects["Cube"], &TURQUOISE);
+	o->loadObjects("./obj/cubetris.obj");
+	o->applyMaterial(o->objects["Cube"], &JADE);
 
 	//o->loadObjects("./obj/lpbull.obj");
 	// o->loadMaterials("./obj/lpbull.mtl");	// TODO:check pointers
@@ -47,8 +47,8 @@ void TestPhongRendering::initObject()
 	lookAt(*_fromPosition_, *_toTarget_, *_up_, *_view_);
 
 	perspective((float)TO_RADIAN(90.0f), 1.0f, 0.1f, 100.0f, *_perspective_);
-	rotationY((float)TO_RADIAN(1.0f / 10), *_rotationY_);
-	rotationZ((float)TO_RADIAN(0.5f / 10), *_rotationZ_);
+	rotationY((float)TO_RADIAN(1.0f / 5), *_rotationY_);
+	rotationZ((float)TO_RADIAN(0.5f / 5), *_rotationZ_);
 
 	//rotationX((float)TO_RADIAN(180.0f), *_demi_tour_);
 	//transformObject(*o, *_demi_tour_);

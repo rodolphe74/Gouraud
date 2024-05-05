@@ -175,6 +175,9 @@ void render(RENDER_TYPE rt, char *pixels, Light *lg, Obj &o, RMatrix &view, RMat
 					vertices[j].x = (float)MIN(w - 1, (projectionPos.v[0] + 1) * 0.5 * w);
 					vertices[j].y = (float)MIN(h - 1, (projectionPos.v[1] /** 1.333*/ + 1) * 0.5 * h);
 					vertices[j].z = (float)cameraPos.v[2];
+					vertices[j].n.x = f->normals[j].x;
+					vertices[j].n.y = f->normals[j].y;
+					vertices[j].n.z = f->normals[j].z;
 
 				}
 				else {

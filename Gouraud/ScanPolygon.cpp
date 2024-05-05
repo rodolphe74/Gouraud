@@ -191,54 +191,38 @@ void ScanPolygon::phongShading(
 				float wv1 = (p[2].y - p[0].y) * (x - p[2].x) + (p[0].x - p[2].x) * (y - p[2].y);
 				wv1 /= (p[1].y - p[2].y) * (p[0].x - p[2].x) + (p[2].x - p[1].x) * (p[0].y - p[2].y);
 				float wv2 = 1 - wv0 - wv1;
-				//float r = p[0].c.r * wv0 + p[1].c.r * wv1 + p[2].c.r * wv2;
-				//float g = p[0].c.g * wv0 + p[1].c.g * wv1 + p[2].c.g * wv2;
-				//float b = p[0].c.b * wv0 + p[1].c.b * wv1 + p[2].c.b * wv2;
 				float z = p[0].z * wv0 + p[1].z * wv1 + p[2].z * wv2;
 
 
 				RVector v0(VEC3);
 				RVector v1(VEC3);
 				RVector v2(VEC3);
-				RVector sum(VEC3);
+				RVector normInterp(VEC3);
 				getVector3FromGVertexNormal(p[0], v0);
 				getVector3FromGVertexNormal(p[1], v1);
 				getVector3FromGVertexNormal(p[2], v2);
+				v0.vecNormalize();
+				v1.vecNormalize();
+				v2.vecNormalize();
 				v0.vecMulScalar(wv0);
 				v1.vecMulScalar(wv1);
 				v2.vecMulScalar(wv2);
-				sum.vecAddVec(v0);
-				sum.vecAddVec(v1);
-				sum.vecAddVec(v2);
+				normInterp.vecAddVec(v0);
+				normInterp.vecAddVec(v1);
+				normInterp.vecAddVec(v2);
 
 
 				// find pixel color regarding normal interpolation
 				// x & y & n (= sum)
 				// pixel projection & lightning here
 
-				// projection
-				//cameraPos.v[0] = (float)x;
-				//cameraPos.v[1] = (float)y;
-				//cameraPos.v[2] = (float)z;
-				//cameraPos.v[3] = 1.0f;
-				//cameraPos.vec4MulMat4(view);
-				//projectionPos.v[0] = cameraPos.v[0];
-				//projectionPos.v[1] = cameraPos.v[1];
-				//projectionPos.v[2] = cameraPos.v[2];
-				//projectionPos.v[3] = 1.0f;
-				//projectionPos.vec4MulMat4(perspective);
-				//projectionPos.vecMulScalar(1 / projectionPos.v[3]);
-				//float px = (float)MIN(w - 1, (projectionPos.v[0] + 1) * 0.5 * w);
-				//float py = (float)MIN(h - 1, (projectionPos.v[1] /** 1.333*/ + 1) * 0.5 * h);
-				//float pz = (float)cameraPos.v[2];
-
 				// color
-				Shading::findPhongColorAtPixel(/*worldNorm*/sum, lightDir, lg, worldPos, diffuseLightColorV, currentMaterial, ambientDiffuseSpecular, viewDir,
+				Shading::findPhongColorAtPixel(normInterp, lightDir, lg, worldPos, diffuseLightColorV, currentMaterial, ambientDiffuseSpecular, viewDir,
 					from, negLightDir, reflectDir, specular, lightColor, objectColor, c, cameraPos, view, projectionPos, perspective);
 
-				unsigned char ucr = (unsigned char)c.v[0];
-				unsigned char ucg = (unsigned char)c.v[1];
-				unsigned char ucb = (unsigned char)c.v[2];
+				unsigned char ucr = (unsigned char)MIN(255, MAX(0, c.v[0]));
+				unsigned char ucg = (unsigned char)MIN(255, MAX(0, c.v[1]));
+				unsigned char ucb = (unsigned char)MIN(255, MAX(0, c.v[1]));
 
 				// draw pixel
 				int offset = (w * (int)y + (int)x);
