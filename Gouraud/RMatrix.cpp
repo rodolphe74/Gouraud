@@ -77,6 +77,7 @@ void RMatrix::matMulMatMmx(RMatrix &w)
 	}
 }
 
+
 void RMatrix::rotation2(REAL angle)
 {
 	float cs = std::cos(angle);

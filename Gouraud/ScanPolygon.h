@@ -61,14 +61,6 @@ public:
 	static void sortVerticesUpBottom(GVertex p[], size_t pLength);
 	static void trace(char *pixels, GVertex p[], size_t pLength, Color c, int w, int h);
 	static void traceGouraud(char *pixels, GVertex p[], size_t pLength, int w, int h, float *zBuffer = nullptr);
-
-	static void tracePhong(
-		char *pixels, GVertex p[], size_t pLength, int w, int h,
-		RVector &worldNorm, RVector &lightDir, Light *lg, RVector &worldPos, RVector &diffuseLightColorV, Material *currentMaterial,
-		RVector &ambientDiffuseSpecular, RVector &viewDir, RVector &from, RVector &negLightDir, RVector &reflectDir, RVector &specular,
-		RVector &lightColor, RVector &objectColor, RVector &c, RVector &cameraPos, RMatrix &view, RVector &projectionPos,
-		RMatrix &perspective, float *zBuffer = nullptr);
-
 	static void debugPolygon(GVertex p[], size_t pLength);
 	static void getVector3FromGVertexNormal(const GVertex &v, RVector &r);
 

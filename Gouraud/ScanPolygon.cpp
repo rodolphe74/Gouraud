@@ -137,107 +137,7 @@ void ScanPolygon::gouraudShading(GVertex p[3], char *pixels, int pLength, int w,
 	delete[] frame;
 }
 
-void ScanPolygon::phongShading(
-	GVertex p[3], char *pixels, int pLength, int w, int h, RVector &worldNorm, RVector &lightDir, Light *lg, RVector &worldPos,
-	RVector &diffuseLightColorV, Material *currentMaterial, RVector &ambientDiffuseSpecular, RVector &viewDir, RVector &from, RVector &negLightDir,
-	RVector &reflectDir, RVector &specular, RVector &lightColor, RVector &objectColor, RVector &c, RVector &cameraPos, RMatrix &view, RVector &projectionPos,
-	RMatrix &perspective, float *zBuffer)
-{
 
-	DWORD *row = (DWORD *)pixels;
-	GVertex *frame = new GVertex[4];
-	frame = getFrame(p, pLength, frame);
-
-	float y1 = frame[0].y;
-	float y2 = y1;
-	float x1 = frame[0].x;
-	float x2 = x1;
-	for (int i = 1; i < 4; i++) {
-		if (frame[i].y != y1) {
-			y2 = frame[i].y;
-			break;
-		}
-	}
-	for (int i = 1; i < 4; i++) {
-		if (frame[i].x != x1) {
-			x2 = frame[i].x;
-			break;
-		}
-	}
-	float t = y1;
-	y1 = std::min(y1, y2);
-	y2 = std::max(t, y2);
-	t = x1;
-	x1 = std::min(x1, x2);
-	x2 = std::max(t, x2);
-
-
-	int iy1 = (int)std::round(y1);
-	int iy2 = (int)std::round(y2);
-	int ix1 = (int)std::round(x1);
-	int ix2 = (int)std::round(x2);
-	for (int y = iy1; y <= iy2; y++) {
-		for (int x = ix1; x <= ix2; x++) {
-			GVertex gv = { (float)x, (float)y };
-			if (pnpoly(p, pLength, gv) && y >= 0 && y < h && x >= 0 && x < w) {
-
-				// Phong on each triangle
-
-
-				// Barycentre
-				// https://codeplea.com/triangular-interpolation
-				float wv0 = (p[1].y - p[2].y) * (x - p[2].x) + (p[2].x - p[1].x) * (y - p[2].y);
-				wv0 /= (p[1].y - p[2].y) * (p[0].x - p[2].x) + (p[2].x - p[1].x) * (p[0].y - p[2].y);
-				float wv1 = (p[2].y - p[0].y) * (x - p[2].x) + (p[0].x - p[2].x) * (y - p[2].y);
-				wv1 /= (p[1].y - p[2].y) * (p[0].x - p[2].x) + (p[2].x - p[1].x) * (p[0].y - p[2].y);
-				float wv2 = 1 - wv0 - wv1;
-				float z = p[0].z * wv0 + p[1].z * wv1 + p[2].z * wv2;
-
-
-				RVector v0(VEC3);
-				RVector v1(VEC3);
-				RVector v2(VEC3);
-				RVector normInterp(VEC3);
-				getVector3FromGVertexNormal(p[0], v0);
-				getVector3FromGVertexNormal(p[1], v1);
-				getVector3FromGVertexNormal(p[2], v2);
-				v0.vecNormalize();
-				v1.vecNormalize();
-				v2.vecNormalize();
-				v0.vecMulScalar(wv0);
-				v1.vecMulScalar(wv1);
-				v2.vecMulScalar(wv2);
-				normInterp.vecAddVec(v0);
-				normInterp.vecAddVec(v1);
-				normInterp.vecAddVec(v2);
-
-
-				// find pixel color regarding normal interpolation
-				// x & y & n (= sum)
-				// pixel projection & lightning here
-
-				// color
-				Shading::findPhongColorAtPixel(normInterp, lightDir, lg, worldPos, diffuseLightColorV, currentMaterial, ambientDiffuseSpecular, viewDir,
-					from, negLightDir, reflectDir, specular, lightColor, objectColor, c, cameraPos, view, projectionPos, perspective);
-
-				unsigned char ucr = (unsigned char)MIN(255, MAX(0, c.v[0]));
-				unsigned char ucg = (unsigned char)MIN(255, MAX(0, c.v[1]));
-				unsigned char ucb = (unsigned char)MIN(255, MAX(0, c.v[1]));
-
-				// draw pixel
-				int offset = (w * (int)y + (int)x);
-				if (zBuffer && z > zBuffer[x + y * w]) {
-					*(row + (offset)) = D3DCOLOR_XRGB(ucr, ucg, ucb);
-					zBuffer[offset] = z;
-				}
-				else if (!zBuffer) {
-					*(row + (offset)) = D3DCOLOR_XRGB(ucr, ucg, ucb);
-				}
-			}
-		}
-	}
-	delete[] frame;
-}
 
 GVertex ScanPolygon::findCentroid(GVertex p[], size_t pLength)
 {
@@ -355,21 +255,6 @@ void ScanPolygon::traceGouraud(char *pixels, GVertex p[], size_t pLength, int w,
 	else {
 		// and gouraud on each
 		gouraudShading(p, pixels, 3, w, h, zBuffer);
-	}
-}
-
-void ScanPolygon::tracePhong(
-	char *pixels, GVertex p[], size_t pLength, int w, int h, RVector &worldNorm, RVector &lightDir, Light *lg, RVector &worldPos,
-	RVector &diffuseLightColorV, Material *currentMaterial, RVector &ambientDiffuseSpecular, RVector &viewDir, RVector &from, RVector &negLightDir,
-	RVector &reflectDir, RVector &specular, RVector &lightColor, RVector &objectColor, RVector &c, RVector &cameraPos, RMatrix &view,
-	RVector &projectionPos, RMatrix &perspective, float *zBuffer)
-{
-	if (pLength > 3) {
-		// TODO
-	}
-	else {
-		phongShading(p, pixels, pLength, w, h, worldNorm, lightDir, lg, worldPos, diffuseLightColorV, currentMaterial, ambientDiffuseSpecular,
-			viewDir, from, negLightDir, reflectDir, specular, lightColor, objectColor, c, cameraPos, view, projectionPos, perspective, zBuffer);
 	}
 }
 

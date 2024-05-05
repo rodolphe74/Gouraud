@@ -157,6 +157,7 @@ public:
 	void matSubMat(RMatrix &w);
 	void matMulMat(RMatrix &w);
 	void matMulMatMmx(RMatrix &w);
+	void matInvert();
 
 	void rotation2(REAL angle);
 	void translation2(REAL x, REAL y);

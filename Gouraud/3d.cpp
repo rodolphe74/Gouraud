@@ -155,34 +155,6 @@ void render(RENDER_TYPE rt, char *pixels, Light *lg, Obj &o, RMatrix &view, RMat
 						ambientDiffuseSpecular, viewDir, from, negLightDir, reflectDir, specular,
 						lightColor, objectColor, c, cameraPos, view, projectionPos, perspective, vertices, j, w, h);
 				}
-				else if (rt == PHONG) {
-					// TODO only projection to get projected vertices
-					// Projection /////////
-					cameraPos.v[0] = worldPos.v[0];
-					cameraPos.v[1] = worldPos.v[1];
-					cameraPos.v[2] = worldPos.v[2];
-					cameraPos.v[3] = 1.0f;
-					cameraPos.vec4MulMat4(view);
-					projectionPos.v[0] = cameraPos.v[0];
-					projectionPos.v[1] = cameraPos.v[1];
-					projectionPos.v[2] = cameraPos.v[2];
-					projectionPos.v[3] = 1.0f;
-					projectionPos.vec4MulMat4(perspective);
-					projectionPos.vecMulScalar(1 / projectionPos.v[3]);
-
-					// Feed polygons /////////
-					// 1.333 to compensate resolution ratio
-					vertices[j].x = (float)MIN(w - 1, (projectionPos.v[0] + 1) * 0.5 * w);
-					vertices[j].y = (float)MIN(h - 1, (projectionPos.v[1] /** 1.333*/ + 1) * 0.5 * h);
-					vertices[j].z = (float)cameraPos.v[2];
-					vertices[j].n.x = f->normals[j].x;
-					vertices[j].n.y = f->normals[j].y;
-					vertices[j].n.z = f->normals[j].z;
-
-				}
-				else {
-
-				}
 
 				std::string log = "[" +
 					std::to_string(i) + "," +
@@ -194,17 +166,7 @@ void render(RENDER_TYPE rt, char *pixels, Light *lg, Obj &o, RMatrix &view, RMat
 			}
 
 			// drawing polygon here //
-			if (rt == GOURAUD) {
-				ScanPolygon::traceGouraud(pixels, vertices, sz, w, h, zBuffer);
-			}
-			else if (rt == PHONG) {
-				ScanPolygon::tracePhong(pixels, vertices, sz, w, h, worldNorm, lightDir, lg, worldPos, diffuseLightColorV, currentMaterial,
-					ambientDiffuseSpecular, viewDir, from, negLightDir, reflectDir, specular, lightColor, objectColor, c, cameraPos, view,
-					projectionPos, perspective, zBuffer);
-			}
-			else {
-			}
-
+			ScanPolygon::traceGouraud(pixels, vertices, sz, w, h, zBuffer);
 			delete[] vertices;
 		}
 	}

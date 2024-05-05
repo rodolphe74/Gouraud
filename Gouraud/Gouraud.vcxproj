@@ -145,7 +145,6 @@
     <ClCompile Include="TestGouraudPolygon.cpp" />
     <ClCompile Include="TestGouraudPolygon3.cpp" />
     <ClCompile Include="TestGouraudRendering.cpp" />
-    <ClCompile Include="TestPhongRendering.cpp" />
     <ClCompile Include="Tests.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -161,7 +160,6 @@
     <ClInclude Include="TestGouraudPolygon.h" />
     <ClInclude Include="TestGouraudPolygon3.h" />
     <ClInclude Include="TestGouraudRendering.h" />
-    <ClInclude Include="TestPhongRendering.h" />
     <ClInclude Include="Tests.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

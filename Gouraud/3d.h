@@ -25,7 +25,7 @@ namespace Fx {
 	} Vertex;
 }
 
-enum RENDER_TYPE { GOURAUD = 0, PHONG };
+enum RENDER_TYPE { GOURAUD = 0, FLAT };
 
 void lookAt(RVector &position, RVector &target, RVector &up, RMatrix &mat);
 void perspective(float fov_y, float aspect, float n, float f, RMatrix &mat);

@@ -41,6 +41,7 @@ void RVector::vecMulMat(RMatrix &w)
 	}
 }
 
+
 void RVector::vec4MulMat4(RMatrix &w)
 {
 	retain();
